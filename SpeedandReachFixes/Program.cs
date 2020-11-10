@@ -93,19 +93,19 @@ namespace SpeedandReachFixes
 
         public static void RunPatch(SynthesisState<ISkyrimMod, ISkyrimModGetter> state)
         {
-            state.PatchMod.GameSettings.Add(new GameSettingFloat(state.PatchMod.GetNextFormKey())
+            state.PatchMod.GameSettings.Add(new GameSettingFloat(state.PatchMod.GetNextFormKey(), state.PatchMod.SkyrimRelease)
             {
                 EditorID = "fObjectHitWeaponReach",
                 Data = 81
             });
 
-            state.PatchMod.GameSettings.Add(new GameSettingFloat(state.PatchMod.GetNextFormKey())
+            state.PatchMod.GameSettings.Add(new GameSettingFloat(state.PatchMod.GetNextFormKey(), state.PatchMod.SkyrimRelease)
             {
                 EditorID = "fObjectHitTwoHandReach",
                 Data = 135
             });
 
-            state.PatchMod.GameSettings.Add(new GameSettingFloat(state.PatchMod.GetNextFormKey())
+            state.PatchMod.GameSettings.Add(new GameSettingFloat(state.PatchMod.GetNextFormKey(), state.PatchMod.SkyrimRelease)
             {
                 EditorID = "fObjectHitH2HReach",
                 Data = 61
