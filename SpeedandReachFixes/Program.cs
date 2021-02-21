@@ -4,6 +4,7 @@ using Mutagen.Bethesda;
 using Mutagen.Bethesda.Synthesis;
 using Mutagen.Bethesda.Skyrim;
 using Noggog;
+using System.Threading.Tasks;
 
 namespace SpeedandReachFixes
 {
@@ -11,7 +12,7 @@ namespace SpeedandReachFixes
     {
         public static bool hasKeyword(this IRaceGetter race, FormKey formKey)
         {
-            foreach (var kwda in race.Keywords ?? Enumerable.Empty<IFormLink<IKeywordGetter>>())
+            foreach (var kwda in race.Keywords.EmptyIfNull())
             {
                 if (kwda.FormKey == formKey)
                 {
@@ -24,7 +25,7 @@ namespace SpeedandReachFixes
 
         public static bool hasKeyword(this IWeaponGetter weapon, FormKey formKey)
         {
-            foreach (var kwda in weapon.Keywords ?? Enumerable.Empty<IFormLink<IKeywordGetter>>())
+            foreach (var kwda in weapon.Keywords.EmptyIfNull())
             {
                 if (kwda.FormKey == formKey)
                 {
@@ -75,23 +76,21 @@ namespace SpeedandReachFixes
             { "WeapTypeWhip", new FormKey("NewArmoury.esp", 0x20f2a1) }
         };
 
-        public static int Main(string[] args)
+        public static Task<int> Main(string[] args)
         {
-            return SynthesisPipeline.Instance.Patch<ISkyrimMod, ISkyrimModGetter>(
-                args: args,
-                patcher: RunPatch,
-                new UserPreferences()
+            return SynthesisPipeline.Instance
+                .AddPatch<ISkyrimMod, ISkyrimModGetter>(RunPatch)
+                .Run(args, new RunPreferences()
                 {
                     ActionsForEmptyArgs = new RunDefaultPatcher()
                     {
                         IdentifyingModKey = "SpeedAndReachFixes.esp",
                         TargetRelease = GameRelease.SkyrimSE
                     }
-                }
-            );
+                });
         }
 
-        public static void RunPatch(SynthesisState<ISkyrimMod, ISkyrimModGetter> state)
+        public static void RunPatch(IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
         {
             state.PatchMod.GameSettings.Add(new GameSettingFloat(state.PatchMod.GetNextFormKey(), state.PatchMod.SkyrimRelease)
             {
