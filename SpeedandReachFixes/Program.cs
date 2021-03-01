@@ -5,35 +5,12 @@ using Mutagen.Bethesda.Synthesis;
 using Mutagen.Bethesda.Skyrim;
 using Noggog;
 using System.Threading.Tasks;
+using Mutagen.Bethesda.FormKeys.SkyrimSE;
 
 namespace SpeedandReachFixes
 {
     public class Program
     {
-        public static Dictionary<string, FormKey> Keywords = new Dictionary<string, FormKey>
-        {
-            { "ActorTypeNPC", new FormKey("Skyrim.esm", 0x013794) },
-
-            // Vanilla KWDA
-            { "WeapTypeBattleaxe", new FormKey("Skyrim.esm", 0x06d932) },
-            { "WeapTypeDagger", new FormKey("Skyrim.esm", 0x01e713) },
-            { "WeapTypeGreatsword", new FormKey("Skyrim.esm", 0x06d931) },
-            { "WeapTypeMace", new FormKey("Skyrim.esm", 0x01e714) },
-            { "WeapTypeSword", new FormKey("Skyrim.esm", 0x01e711) },
-            { "WeapTypeWarAxe", new FormKey("Skyrim.esm", 0x01e712) },
-            { "WeapTypeWarhammer", new FormKey("Skyrim.esm", 0x06d930) },
-
-            // Animated Armoury KWDA
-            { "WeapTypeCestus", new FormKey("NewArmoury.esp", 0x19aab3) },
-            { "WeapTypeClaw", new FormKey("NewArmoury.esp", 0x19aab4) },
-            { "WeapTypeHalberd", new FormKey("NewArmoury.esp", 0x0e4580) },
-            { "WeapTypePike", new FormKey("NewArmoury.esp", 0x0e457e) },
-            { "WeapTypeQtrStaff", new FormKey("NewArmoury.esp", 0x0e4581) },
-            { "WeapTypeRapier", new FormKey("NewArmoury.esp", 0x000801) },
-            { "WeapTypeSpear", new FormKey("NewArmoury.esp", 0x0e457f) },
-            { "WeapTypeWhip", new FormKey("NewArmoury.esp", 0x20f2a1) }
-        };
-
         public static Task<int> Main(string[] args)
         {
             return SynthesisPipeline.Instance
@@ -87,7 +64,7 @@ namespace SpeedandReachFixes
             {
                 if (race.Attacks == null) continue;
 
-                if (!race.HasKeyword(Program.Keywords["ActorTypeNPC"])) continue;
+                if (!race.HasKeyword(Skyrim.Keyword.ActorTypeNPC)) continue;
 
                 var modifiedRace = state.PatchMod.Races.GetOrAddAsOverride(race);
 
@@ -116,23 +93,23 @@ namespace SpeedandReachFixes
             // Set the vanilla values first so that they can be overidden by more specific
             // settings later such as the case with Animated Armory where multiple keywords
             // for weapon type exist on a single weapon.
-            if      (weapon.HasKeyword(Program.Keywords["WeapTypeBattleaxe"]))  weapon.Data.Reach = 0.8275F;
-            else if (weapon.HasKeyword(Program.Keywords["WeapTypeDagger"]))     weapon.Data.Reach = 0.533F;
-            else if (weapon.HasKeyword(Program.Keywords["WeapTypeGreatsword"])) weapon.Data.Reach = 0.88F;
-            else if (weapon.HasKeyword(Program.Keywords["WeapTypeMace"]))       weapon.Data.Reach = 0.75F;
-            else if (weapon.HasKeyword(Program.Keywords["WeapTypeSword"]))      weapon.Data.Reach = 0.83F;
-            else if (weapon.HasKeyword(Program.Keywords["WeapTypeWarAxe"]))     weapon.Data.Reach = 0.6F;
-            else if (weapon.HasKeyword(Program.Keywords["WeapTypeWarhammer"]))  weapon.Data.Reach = 0.8F;
+            if      (weapon.HasKeyword(Skyrim.Keyword.WeapTypeBattleaxe))  weapon.Data.Reach = 0.8275F;
+            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeDagger))     weapon.Data.Reach = 0.533F;
+            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeGreatsword)) weapon.Data.Reach = 0.88F;
+            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeMace))       weapon.Data.Reach = 0.75F;
+            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeSword))      weapon.Data.Reach = 0.83F;
+            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeWarAxe))     weapon.Data.Reach = 0.6F;
+            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeWarhammer))  weapon.Data.Reach = 0.8F;
 
             // Animated Armoury support
-            if      (weapon.HasKeyword(Program.Keywords["WeapTypeCestus"]))     weapon.Data.Reach = weapon.Data.Reach - 0F;     // Intentionally left untouched
-            else if (weapon.HasKeyword(Program.Keywords["WeapTypeClaw"]))       weapon.Data.Reach = weapon.Data.Reach - 0.41F;
-            else if (weapon.HasKeyword(Program.Keywords["WeapTypeHalberd"]))    weapon.Data.Reach = weapon.Data.Reach - 0.58F;
-            else if (weapon.HasKeyword(Program.Keywords["WeapTypePike"]))       weapon.Data.Reach = weapon.Data.Reach - 0.2F;
-            else if (weapon.HasKeyword(Program.Keywords["WeapTypeQtrStaff"]))   weapon.Data.Reach = weapon.Data.Reach - 0.25F;
-            else if (weapon.HasKeyword(Program.Keywords["WeapTypeRapier"]))     weapon.Data.Reach = weapon.Data.Reach - 0.2F;
-            else if (weapon.HasKeyword(Program.Keywords["WeapTypeSpear"]))      weapon.Data.Reach = weapon.Data.Reach - 0F;     // Intentionally left untouched
-            else if (weapon.HasKeyword(Program.Keywords["WeapTypeWhip"]))       weapon.Data.Reach = weapon.Data.Reach - 0.5F;
+            if      (weapon.HasKeyword(NewArmoury.Keyword.WeapTypeCestus))     weapon.Data.Reach = weapon.Data.Reach - 0F;     // Intentionally left untouched
+            else if (weapon.HasKeyword(NewArmoury.Keyword.WeapTypeClaw))       weapon.Data.Reach = weapon.Data.Reach - 0.41F;
+            else if (weapon.HasKeyword(NewArmoury.Keyword.WeapTypeHalberd))    weapon.Data.Reach = weapon.Data.Reach - 0.58F;
+            else if (weapon.HasKeyword(NewArmoury.Keyword.WeapTypePike))       weapon.Data.Reach = weapon.Data.Reach - 0.2F;
+            else if (weapon.HasKeyword(NewArmoury.Keyword.WeapTypeQtrStaff))   weapon.Data.Reach = weapon.Data.Reach - 0.25F;
+            else if (weapon.HasKeyword(NewArmoury.Keyword.WeapTypeRapier))     weapon.Data.Reach = weapon.Data.Reach - 0.2F;
+            else if (weapon.HasKeyword(NewArmoury.Keyword.WeapTypeSpear))      weapon.Data.Reach = weapon.Data.Reach - 0F;     // Intentionally left untouched
+            else if (weapon.HasKeyword(NewArmoury.Keyword.WeapTypeWhip))       weapon.Data.Reach = weapon.Data.Reach - 0.5F;
 
             // Revert any changes to giant clubs as they may cause issues with the AI
             if (weapon.EditorID?.ContainsInsensitive("GiantClub") == true)
@@ -145,26 +122,27 @@ namespace SpeedandReachFixes
         {
             if (weapon.Data == null) return;
 
-            List<FormKey> exclusionList = new(){ 
-                Program.Keywords["WeapTypeCestus"], 
-                Program.Keywords["WeapTypeClaw"], 
-                Program.Keywords["WeapTypeHalberd"], 
-                Program.Keywords["WeapTypePike"], 
-                Program.Keywords["WeapTypeQtrStaff"], 
-                Program.Keywords["WeapTypeRapier"], 
-                Program.Keywords["WeapTypeSpear"],
-                Program.Keywords["WeapTypeWhip"]
+            HashSet<FormKey> exclusionList = new()
+            {
+                NewArmoury.Keyword.WeapTypeCestus,
+                NewArmoury.Keyword.WeapTypeClaw,
+                NewArmoury.Keyword.WeapTypeHalberd,
+                NewArmoury.Keyword.WeapTypePike,
+                NewArmoury.Keyword.WeapTypeQtrStaff,
+                NewArmoury.Keyword.WeapTypeRapier,
+                NewArmoury.Keyword.WeapTypeSpear,
+                NewArmoury.Keyword.WeapTypeWhip,
             };
 
             if (weapon.Keywords.EmptyIfNull().Any(k => exclusionList.Contains(k.FormKey))) return;
 
-            if      (weapon.HasKeyword(Program.Keywords["WeapTypeBattleaxe"]))  weapon.Data.Speed = 0.666667F;
-            else if (weapon.HasKeyword(Program.Keywords["WeapTypeDagger"]))     weapon.Data.Speed = 1.35F;
-            else if (weapon.HasKeyword(Program.Keywords["WeapTypeGreatsword"])) weapon.Data.Speed = 0.85F;
-            else if (weapon.HasKeyword(Program.Keywords["WeapTypeMace"]))       weapon.Data.Speed = 0.9F;
-            else if (weapon.HasKeyword(Program.Keywords["WeapTypeSword"]))      weapon.Data.Speed = 1.1F;
-            else if (weapon.HasKeyword(Program.Keywords["WeapTypeWarAxe"]))     weapon.Data.Speed = 1F;
-            else if (weapon.HasKeyword(Program.Keywords["WeapTypeWarhammer"]))  weapon.Data.Speed = 0.6F;
+            if      (weapon.HasKeyword(Skyrim.Keyword.WeapTypeBattleaxe))  weapon.Data.Speed = 0.666667F;
+            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeDagger))     weapon.Data.Speed = 1.35F;
+            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeGreatsword)) weapon.Data.Speed = 0.85F;
+            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeMace))       weapon.Data.Speed = 0.9F;
+            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeSword))      weapon.Data.Speed = 1.1F;
+            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeWarAxe))     weapon.Data.Speed = 1F;
+            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeWarhammer))  weapon.Data.Speed = 0.6F;
         }
     }
 }
