@@ -8,48 +8,6 @@ using System.Threading.Tasks;
 
 namespace SpeedandReachFixes
 {
-    public static class MyExtensions
-    {
-        public static bool hasKeyword(this IRaceGetter race, FormKey formKey)
-        {
-            foreach (var kwda in race.Keywords.EmptyIfNull())
-            {
-                if (kwda.FormKey == formKey)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public static bool hasKeyword(this IWeaponGetter weapon, FormKey formKey)
-        {
-            foreach (var kwda in weapon.Keywords.EmptyIfNull())
-            {
-                if (kwda.FormKey == formKey)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public static bool hasAnyKeyword(this IWeaponGetter weapon, FormKey[] formKeys)
-        {
-            foreach (var formKey in formKeys)
-            {
-                if (weapon.hasKeyword(formKey))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-    }
-
     public class Program
     {
         public static Dictionary<string, FormKey> Keywords = new Dictionary<string, FormKey>
@@ -129,7 +87,7 @@ namespace SpeedandReachFixes
             {
                 if (race.Attacks == null) continue;
 
-                if (!race.hasKeyword(Program.Keywords["ActorTypeNPC"])) continue;
+                if (!race.HasKeyword(Program.Keywords["ActorTypeNPC"])) continue;
 
                 var modifiedRace = state.PatchMod.Races.GetOrAddAsOverride(race);
 
@@ -158,23 +116,23 @@ namespace SpeedandReachFixes
             // Set the vanilla values first so that they can be overidden by more specific
             // settings later such as the case with Animated Armory where multiple keywords
             // for weapon type exist on a single weapon.
-            if      (weapon.hasKeyword(Program.Keywords["WeapTypeBattleaxe"]))  weapon.Data.Reach = 0.8275F;
-            else if (weapon.hasKeyword(Program.Keywords["WeapTypeDagger"]))     weapon.Data.Reach = 0.533F;
-            else if (weapon.hasKeyword(Program.Keywords["WeapTypeGreatsword"])) weapon.Data.Reach = 0.88F;
-            else if (weapon.hasKeyword(Program.Keywords["WeapTypeMace"]))       weapon.Data.Reach = 0.75F;
-            else if (weapon.hasKeyword(Program.Keywords["WeapTypeSword"]))      weapon.Data.Reach = 0.83F;
-            else if (weapon.hasKeyword(Program.Keywords["WeapTypeWarAxe"]))     weapon.Data.Reach = 0.6F;
-            else if (weapon.hasKeyword(Program.Keywords["WeapTypeWarhammer"]))  weapon.Data.Reach = 0.8F;
+            if      (weapon.HasKeyword(Program.Keywords["WeapTypeBattleaxe"]))  weapon.Data.Reach = 0.8275F;
+            else if (weapon.HasKeyword(Program.Keywords["WeapTypeDagger"]))     weapon.Data.Reach = 0.533F;
+            else if (weapon.HasKeyword(Program.Keywords["WeapTypeGreatsword"])) weapon.Data.Reach = 0.88F;
+            else if (weapon.HasKeyword(Program.Keywords["WeapTypeMace"]))       weapon.Data.Reach = 0.75F;
+            else if (weapon.HasKeyword(Program.Keywords["WeapTypeSword"]))      weapon.Data.Reach = 0.83F;
+            else if (weapon.HasKeyword(Program.Keywords["WeapTypeWarAxe"]))     weapon.Data.Reach = 0.6F;
+            else if (weapon.HasKeyword(Program.Keywords["WeapTypeWarhammer"]))  weapon.Data.Reach = 0.8F;
 
             // Animated Armoury support
-            if      (weapon.hasKeyword(Program.Keywords["WeapTypeCestus"]))     weapon.Data.Reach = weapon.Data.Reach - 0F;     // Intentionally left untouched
-            else if (weapon.hasKeyword(Program.Keywords["WeapTypeClaw"]))       weapon.Data.Reach = weapon.Data.Reach - 0.41F;
-            else if (weapon.hasKeyword(Program.Keywords["WeapTypeHalberd"]))    weapon.Data.Reach = weapon.Data.Reach - 0.58F;
-            else if (weapon.hasKeyword(Program.Keywords["WeapTypePike"]))       weapon.Data.Reach = weapon.Data.Reach - 0.2F;
-            else if (weapon.hasKeyword(Program.Keywords["WeapTypeQtrStaff"]))   weapon.Data.Reach = weapon.Data.Reach - 0.25F;
-            else if (weapon.hasKeyword(Program.Keywords["WeapTypeRapier"]))     weapon.Data.Reach = weapon.Data.Reach - 0.2F;
-            else if (weapon.hasKeyword(Program.Keywords["WeapTypeSpear"]))      weapon.Data.Reach = weapon.Data.Reach - 0F;     // Intentionally left untouched
-            else if (weapon.hasKeyword(Program.Keywords["WeapTypeWhip"]))       weapon.Data.Reach = weapon.Data.Reach - 0.5F;
+            if      (weapon.HasKeyword(Program.Keywords["WeapTypeCestus"]))     weapon.Data.Reach = weapon.Data.Reach - 0F;     // Intentionally left untouched
+            else if (weapon.HasKeyword(Program.Keywords["WeapTypeClaw"]))       weapon.Data.Reach = weapon.Data.Reach - 0.41F;
+            else if (weapon.HasKeyword(Program.Keywords["WeapTypeHalberd"]))    weapon.Data.Reach = weapon.Data.Reach - 0.58F;
+            else if (weapon.HasKeyword(Program.Keywords["WeapTypePike"]))       weapon.Data.Reach = weapon.Data.Reach - 0.2F;
+            else if (weapon.HasKeyword(Program.Keywords["WeapTypeQtrStaff"]))   weapon.Data.Reach = weapon.Data.Reach - 0.25F;
+            else if (weapon.HasKeyword(Program.Keywords["WeapTypeRapier"]))     weapon.Data.Reach = weapon.Data.Reach - 0.2F;
+            else if (weapon.HasKeyword(Program.Keywords["WeapTypeSpear"]))      weapon.Data.Reach = weapon.Data.Reach - 0F;     // Intentionally left untouched
+            else if (weapon.HasKeyword(Program.Keywords["WeapTypeWhip"]))       weapon.Data.Reach = weapon.Data.Reach - 0.5F;
 
             // Revert any changes to giant clubs as they may cause issues with the AI
             if (weapon.EditorID?.ContainsInsensitive("GiantClub") == true)
@@ -187,7 +145,7 @@ namespace SpeedandReachFixes
         {
             if (weapon.Data == null) return;
 
-            FormKey[] exclusionList = { 
+            List<FormKey> exclusionList = new(){ 
                 Program.Keywords["WeapTypeCestus"], 
                 Program.Keywords["WeapTypeClaw"], 
                 Program.Keywords["WeapTypeHalberd"], 
@@ -198,15 +156,15 @@ namespace SpeedandReachFixes
                 Program.Keywords["WeapTypeWhip"]
             };
 
-            if (weapon.hasAnyKeyword(exclusionList)) return;
+            if (weapon.Keywords.EmptyIfNull().Any(k => exclusionList.Contains(k.FormKey))) return;
 
-            if      (weapon.hasKeyword(Program.Keywords["WeapTypeBattleaxe"]))  weapon.Data.Speed = 0.666667F;
-            else if (weapon.hasKeyword(Program.Keywords["WeapTypeDagger"]))     weapon.Data.Speed = 1.35F;
-            else if (weapon.hasKeyword(Program.Keywords["WeapTypeGreatsword"])) weapon.Data.Speed = 0.85F;
-            else if (weapon.hasKeyword(Program.Keywords["WeapTypeMace"]))       weapon.Data.Speed = 0.9F;
-            else if (weapon.hasKeyword(Program.Keywords["WeapTypeSword"]))      weapon.Data.Speed = 1.1F;
-            else if (weapon.hasKeyword(Program.Keywords["WeapTypeWarAxe"]))     weapon.Data.Speed = 1F;
-            else if (weapon.hasKeyword(Program.Keywords["WeapTypeWarhammer"]))  weapon.Data.Speed = 0.6F;
+            if      (weapon.HasKeyword(Program.Keywords["WeapTypeBattleaxe"]))  weapon.Data.Speed = 0.666667F;
+            else if (weapon.HasKeyword(Program.Keywords["WeapTypeDagger"]))     weapon.Data.Speed = 1.35F;
+            else if (weapon.HasKeyword(Program.Keywords["WeapTypeGreatsword"])) weapon.Data.Speed = 0.85F;
+            else if (weapon.HasKeyword(Program.Keywords["WeapTypeMace"]))       weapon.Data.Speed = 0.9F;
+            else if (weapon.HasKeyword(Program.Keywords["WeapTypeSword"]))      weapon.Data.Speed = 1.1F;
+            else if (weapon.HasKeyword(Program.Keywords["WeapTypeWarAxe"]))     weapon.Data.Speed = 1F;
+            else if (weapon.HasKeyword(Program.Keywords["WeapTypeWarhammer"]))  weapon.Data.Speed = 0.6F;
         }
     }
 }
