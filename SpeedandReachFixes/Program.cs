@@ -15,14 +15,8 @@ namespace SpeedandReachFixes
         {
             return SynthesisPipeline.Instance
                 .AddPatch<ISkyrimMod, ISkyrimModGetter>(RunPatch)
-                .Run(args, new RunPreferences()
-                {
-                    ActionsForEmptyArgs = new RunDefaultPatcher()
-                    {
-                        IdentifyingModKey = "SpeedAndReachFixes.esp",
-                        TargetRelease = GameRelease.SkyrimSE
-                    }
-                });
+                .SetTypicalOpen(GameRelease.SkyrimSE, "SpeedAndReachFixes.esp")
+                .Run(args);
         }
 
         public static void RunPatch(IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
@@ -45,7 +39,7 @@ namespace SpeedandReachFixes
                 Data = 61
             });
 
-            foreach (var gmst in state.LoadOrder.PriorityOrder.WinningOverrides<IGameSettingGetter>())
+            foreach (var gmst in state.LoadOrder.PriorityOrder.GameSetting().WinningOverrides())
             {
                 if (gmst.EditorID?.Contains("fCombatDistance") == true)
                 {
@@ -60,7 +54,7 @@ namespace SpeedandReachFixes
                 }
             }
 
-            foreach (var race in state.LoadOrder.PriorityOrder.WinningOverrides<IRaceGetter>())
+            foreach (var race in state.LoadOrder.PriorityOrder.Race().WinningOverrides())
             {
                 if (race.Attacks == null) continue;
 
