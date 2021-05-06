@@ -95,23 +95,23 @@ namespace SpeedandReachFixes
             // Set the vanilla values first so that they can be overidden by more specific
             // settings later such as the case with Animated Armory where multiple keywords
             // for weapon type exist on a single weapon.
-            if      (weapon.HasKeyword(Skyrim.Keyword.WeapTypeBattleaxe))  weapon.Data.Reach = 0.8275F;
-            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeDagger))     weapon.Data.Reach = 0.533F;
-            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeGreatsword)) weapon.Data.Reach = 0.88F;
-            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeMace))       weapon.Data.Reach = 0.75F;
-            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeSword))      weapon.Data.Reach = 0.83F;
-            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeWarAxe))     weapon.Data.Reach = 0.6F;
-            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeWarhammer))  weapon.Data.Reach = 0.8F;
+            if      (weapon.HasKeyword(Skyrim.Keyword.WeapTypeBattleaxe))  weapon.Data.Reach = Settings.Battleaxe.Reach;
+            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeDagger))     weapon.Data.Reach = Settings.Dagger.Reach;
+            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeGreatsword)) weapon.Data.Reach = Settings.Greatsword.Reach;
+            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeMace))       weapon.Data.Reach = Settings.Mace.Reach;
+            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeSword))      weapon.Data.Reach = Settings.Sword.Reach;
+            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeWarAxe))     weapon.Data.Reach = Settings.WarAxe.Reach;
+            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeWarhammer))  weapon.Data.Reach = Settings.Warhammer.Reach;
 
             // Animated Armoury support
-            if      (weapon.HasKeyword(NewArmoury.Keyword.WeapTypeCestus))     weapon.Data.Reach = weapon.Data.Reach - 0F;     // Intentionally left untouched
-            else if (weapon.HasKeyword(NewArmoury.Keyword.WeapTypeClaw))       weapon.Data.Reach = weapon.Data.Reach - 0.41F;
-            else if (weapon.HasKeyword(NewArmoury.Keyword.WeapTypeHalberd))    weapon.Data.Reach = weapon.Data.Reach - 0.58F;
-            else if (weapon.HasKeyword(NewArmoury.Keyword.WeapTypePike))       weapon.Data.Reach = weapon.Data.Reach - 0.2F;
-            else if (weapon.HasKeyword(NewArmoury.Keyword.WeapTypeQtrStaff))   weapon.Data.Reach = weapon.Data.Reach - 0.25F;
-            else if (weapon.HasKeyword(NewArmoury.Keyword.WeapTypeRapier))     weapon.Data.Reach = weapon.Data.Reach - 0.2F;
-            else if (weapon.HasKeyword(NewArmoury.Keyword.WeapTypeSpear))      weapon.Data.Reach = weapon.Data.Reach - 0F;     // Intentionally left untouched
-            else if (weapon.HasKeyword(NewArmoury.Keyword.WeapTypeWhip))       weapon.Data.Reach = weapon.Data.Reach - 0.5F;
+            if      (weapon.HasKeyword(NewArmoury.Keyword.WeapTypeCestus))     weapon.Data.Reach = weapon.Data.Reach - Settings.Cestus.Reach;     // Intentionally left untouched
+            else if (weapon.HasKeyword(NewArmoury.Keyword.WeapTypeClaw))       weapon.Data.Reach = weapon.Data.Reach - Settings.Claw.Reach;
+            else if (weapon.HasKeyword(NewArmoury.Keyword.WeapTypeHalberd))    weapon.Data.Reach = weapon.Data.Reach - Settings.Halberd.Reach;
+            else if (weapon.HasKeyword(NewArmoury.Keyword.WeapTypePike))       weapon.Data.Reach = weapon.Data.Reach - Settings.Pike.Reach;
+            else if (weapon.HasKeyword(NewArmoury.Keyword.WeapTypeQtrStaff))   weapon.Data.Reach = weapon.Data.Reach - Settings.QuarterStaff.Reach;
+            else if (weapon.HasKeyword(NewArmoury.Keyword.WeapTypeRapier))     weapon.Data.Reach = weapon.Data.Reach - Settings.Rapier.Reach;
+            else if (weapon.HasKeyword(NewArmoury.Keyword.WeapTypeSpear))      weapon.Data.Reach = weapon.Data.Reach - Settings.Spear.Reach;     // Intentionally left untouched
+            else if (weapon.HasKeyword(NewArmoury.Keyword.WeapTypeWhip))       weapon.Data.Reach = weapon.Data.Reach - Settings.Whip.Reach;
 
             // Revert any changes to giant clubs as they may cause issues with the AI
             if (weapon.EditorID?.ContainsInsensitive("GiantClub") == true)
@@ -138,13 +138,13 @@ namespace SpeedandReachFixes
 
             if (weapon.Keywords.EmptyIfNull().Any(k => exclusionList.Contains(k.FormKey))) return;
 
-            if      (weapon.HasKeyword(Skyrim.Keyword.WeapTypeBattleaxe))  weapon.Data.Speed = 0.666667F;
-            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeDagger))     weapon.Data.Speed = 1.35F;
-            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeGreatsword)) weapon.Data.Speed = 0.85F;
-            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeMace))       weapon.Data.Speed = 0.9F;
-            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeSword))      weapon.Data.Speed = 1.1F;
-            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeWarAxe))     weapon.Data.Speed = 1F;
-            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeWarhammer))  weapon.Data.Speed = 0.6F;
+            if      (weapon.HasKeyword(Skyrim.Keyword.WeapTypeBattleaxe))  weapon.Data.Speed = Settings.Battleaxe.Speed;
+            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeDagger))     weapon.Data.Speed = Settings.Dagger.Speed;
+            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeGreatsword)) weapon.Data.Speed = Settings.Greatsword.Speed;
+            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeMace))       weapon.Data.Speed = Settings.Mace.Speed;
+            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeSword))      weapon.Data.Speed = Settings.Sword.Speed;
+            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeWarAxe))     weapon.Data.Speed = Settings.WarAxe.Speed;
+            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeWarhammer))  weapon.Data.Speed = Settings.Warhammer.Speed;
         }
     }
 }
