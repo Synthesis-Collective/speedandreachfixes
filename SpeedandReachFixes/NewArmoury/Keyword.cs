@@ -1,10 +1,12 @@
+using Mutagen.Bethesda.Plugins;
+
 namespace Mutagen.Bethesda.FormKeys.SkyrimSE
 {
-    public static partial class NewArmoury
+    public static class NewArmoury
     {
         public static class Keyword
         {
-            private readonly static ModKey ModKey = ModKey.FromNameAndExtension("NewArmoury.esp");
+            private static readonly ModKey ModKey = ModKey.FromNameAndExtension("NewArmoury.esp");
             public static FormKey NA_UniFWhp => ModKey.MakeFormKey(0x292ea1);
             public static FormKey WeapTypeRapier => ModKey.MakeFormKey(0x801);
             public static FormKey WeapTypePike => ModKey.MakeFormKey(0xe457e);
