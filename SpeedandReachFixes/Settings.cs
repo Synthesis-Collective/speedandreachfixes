@@ -44,8 +44,17 @@ namespace SpeedandReachFixes
         {
             Priority = priority;
             Keyword = keyword;
-            _speed = speed;
-            _reach = reach;
+            
+            if (reach != null)
+                Reach = reach.Value;
+            else
+                Reach = -0.0f;
+            
+            if (speed != null)
+                Speed = speed.Value;
+            else
+                Speed = -0.0f;
+            
             if (matchlist != null)
                 MatchList = matchlist;
         }
@@ -53,33 +62,25 @@ namespace SpeedandReachFixes
         public Stats()
         {
             Priority = 0;
-            _reach = -0.0F;
-            _speed = -0.0F;
+            Reach = 0F;
+            Speed = 0F;
         }
         [MaintainOrder]
-        [Ignore]
-        private float? _reach;
-        [Ignore]
-        private float? _speed;
-
+        
         [Tooltip("The range of this weapon.")]
-        public float Reach = -0.0F;
+        public float Reach;
         [Tooltip("The speed of this weapon.")]
-        public float Speed = -0.0F;
+        public float Speed;
         
         public float GetReach(float reach, out bool isModified)
         {
-            if (Math.Abs(Reach - (-0.0F)) > 0.001F)
-                _reach = Reach;
-            isModified = _reach != null;
-            return _reach ?? reach;
+            isModified = Reach != 0F;
+            return isModified ? Reach : reach;
         }
         public float GetSpeed(float speed, out bool isModified)
         {
-            if (Math.Abs(Speed - (-0.0F)) > 0.001F)
-                _speed = Speed;
-            isModified = _speed != null;
-            return _speed ?? speed;
+            isModified = Speed != 0F;
+            return isModified ? Speed : speed;
         }
     }
 
@@ -103,8 +104,8 @@ namespace SpeedandReachFixes
             new Stats(2, NewArmoury.Keyword.WeapTypeCestus),
             new Stats(2, NewArmoury.Keyword.WeapTypeClaw, null, 0.41F),
             new Stats(2, NewArmoury.Keyword.WeapTypeHalberd, null, 1.71F),
-            new Stats(2, NewArmoury.Keyword.WeapTypePike, null, 2F),
-            new Stats(2, NewArmoury.Keyword.WeapTypeQtrStaff, null, 2F),
+            new Stats(2, NewArmoury.Keyword.WeapTypePike, null, 1.88F),
+            new Stats(2, NewArmoury.Keyword.WeapTypeQtrStaff, null, 0.88F),
             new Stats(2, NewArmoury.Keyword.WeapTypeRapier, null, 0.8275F),
             new Stats(2, NewArmoury.Keyword.WeapTypeSpear, null, 1.5F),
             new Stats(2, NewArmoury.Keyword.WeapTypeWhip, null, 1.1F)

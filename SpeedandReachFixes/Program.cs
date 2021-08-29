@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Mutagen.Bethesda;
 using Mutagen.Bethesda.FormKeys.SkyrimSE;
@@ -24,6 +25,7 @@ namespace SpeedandReachFixes
 
         public static void RunPatch(IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
         {
+            var count = 0;
             state.PatchMod.GameSettings.Add(new GameSettingFloat(state.PatchMod.GetNextFormKey(), state.PatchMod.SkyrimRelease)
             {
                 EditorID = "fObjectHitWeaponReach",
@@ -48,12 +50,14 @@ namespace SpeedandReachFixes
                 {
                     var modifiedGmst = state.PatchMod.GameSettings.GetOrAddAsOverride(gmst);
                     ((GameSettingFloat)modifiedGmst).Data = 141;
+                    ++count;
                 }
 
                 if (gmst.EditorID?.Contains("fCombatBashReach") == true)
                 {
                     var modifiedGmst = state.PatchMod.GameSettings.GetOrAddAsOverride(gmst);
                     ((GameSettingFloat)modifiedGmst).Data = 61;
+                    ++count;
                 }
             }
             Console.WriteLine("Done adjusting Game Settings");
@@ -66,95 +70,38 @@ namespace SpeedandReachFixes
 
                     var modifiedRace = state.PatchMod.Races.GetOrAddAsOverride(race);
 
-                    foreach (var attack in modifiedRace.Attacks)
+                    foreach (var attack in modifiedRace.Attacks.Where(attack => attack.AttackData != null))
                     {
-                        if (attack.AttackData == null) continue;
-                        attack.AttackData.StrikeAngle += 7;
+                        attack.AttackData!.StrikeAngle += 7;
+                        ++count;
                     }
                 }
                 Console.WriteLine("Applied Race Weapon Swing Angle Changes");
             }
 
-            foreach (var weap in state.LoadOrder.PriorityOrder.WinningOverrides<IWeaponGetter>())
-            {
-                if (weap.Data == null) continue;
-
-                var weapon = state.PatchMod.Weapons.GetOrAddAsOverride(weap);
-
-                AdjustWeaponStats(weapon);
-            }
+            count += (from weap in state.LoadOrder.PriorityOrder.WinningOverrides<IWeaponGetter>() where weap.Data != null select state.PatchMod.Weapons.GetOrAddAsOverride(weap) into weapon select AdjustWeaponStats(weapon) ? 1 : 0).Sum();
+            Console.WriteLine("Process is Complete.\nModified [" + count + "] records.");
         }
 
-        public static void AdjustWeaponStats(Weapon weapon)
+        private static bool AdjustWeaponStats(Weapon weapon)
         {
-            if (weapon.Data == null) return;
+            if (weapon.Data == null) return false;
             var stats = Settings.GetHighestPriorityStats(weapon);
             bool changedSpeed = false, changedReach = false;
             weapon.Data.Speed = stats.GetSpeed(weapon.Data.Speed, out changedSpeed);
             weapon.Data.Reach = weapon.EditorID?.ContainsInsensitive("GiantClub") == true ? 1.3F : stats.GetReach(weapon.Data.Reach, out changedReach);
             
-            Console.WriteLine("Finished Processing: " + weapon.EditorID);
-            
+            if (changedSpeed || changedReach) // no changes made
+                Console.WriteLine("Finished Processing: " + weapon.EditorID);
             if (changedSpeed)
-                Console.WriteLine("\tSpeed = " + weapon.Data.Speed);
+                Console.WriteLine("\tSpeed = " + weapon.Data.Speed.ToString("F"));
             if (changedReach)
-                Console.WriteLine("\tReach = " + weapon.Data.Reach);
-            if (!changedSpeed && !changedReach)
-                Console.WriteLine("\t[No Changes]");
-
-            // Set the vanilla values first so that they can be overidden by more specific
-            // settings later such as the case with Animated Armory where multiple keywords
-            // for weapon type exist on a single weapon.
-           /* if      (weapon.HasKeyword(Skyrim.Keyword.WeapTypeBattleaxe))  weapon.Data.Reach = Settings.Battleaxe.Reach;
-            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeDagger))     weapon.Data.Reach = Settings.Dagger.Reach;
-            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeGreatsword)) weapon.Data.Reach = Settings.Greatsword.Reach;
-            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeMace))       weapon.Data.Reach = Settings.Mace.Reach;
-            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeSword))      weapon.Data.Reach = Settings.Sword.Reach;
-            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeWarAxe))     weapon.Data.Reach = Settings.WarAxe.Reach;
-            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeWarhammer))  weapon.Data.Reach = Settings.Warhammer.Reach;
-
-            // Animated Armoury support
-            if      (weapon.HasKeyword(NewArmoury.Keyword.WeapTypeCestus))     weapon.Data.Reach -= Settings.Cestus.Reach;     // Intentionally left untouched
-            else if (weapon.HasKeyword(NewArmoury.Keyword.WeapTypeClaw))       weapon.Data.Reach -= Settings.Claw.Reach;
-            else if (weapon.HasKeyword(NewArmoury.Keyword.WeapTypeHalberd))    weapon.Data.Reach -= Settings.Halberd.Reach;
-            else if (weapon.HasKeyword(NewArmoury.Keyword.WeapTypePike))       weapon.Data.Reach -= Settings.Pike.Reach;
-            else if (weapon.HasKeyword(NewArmoury.Keyword.WeapTypeQtrStaff))   weapon.Data.Reach -= Settings.QuarterStaff.Reach;
-            else if (weapon.HasKeyword(NewArmoury.Keyword.WeapTypeRapier))     weapon.Data.Reach -= Settings.Rapier.Reach;
-            else if (weapon.HasKeyword(NewArmoury.Keyword.WeapTypeSpear))      weapon.Data.Reach -= Settings.Spear.Reach;     // Intentionally left untouched
-            else if (weapon.HasKeyword(NewArmoury.Keyword.WeapTypeWhip))       weapon.Data.Reach -= Settings.Whip.Reach;
-           */
+                Console.WriteLine("\tReach = " + weapon.Data.Reach.ToString("F"));
+            
             // Revert any changes to giant clubs as they may cause issues with the AI
             if (weapon.EditorID?.ContainsInsensitive("GiantClub") == true)
-            {
                 weapon.Data.Reach = 1.3F;
-            }
+            return changedSpeed || changedReach;
         }
-
-      /*  public static void AdjustWeaponSpeed(Weapon weapon)
-        {
-            if (weapon.Data == null) return;
-
-            HashSet<FormKey> exclusionList = new()
-            {
-                NewArmoury.Keyword.WeapTypeCestus,
-                NewArmoury.Keyword.WeapTypeClaw,
-                NewArmoury.Keyword.WeapTypeHalberd,
-                NewArmoury.Keyword.WeapTypePike,
-                NewArmoury.Keyword.WeapTypeQtrStaff,
-                NewArmoury.Keyword.WeapTypeRapier,
-                NewArmoury.Keyword.WeapTypeSpear,
-                NewArmoury.Keyword.WeapTypeWhip,
-            };
-
-            if (weapon.Keywords.EmptyIfNull().Any(k => exclusionList.Contains(k.FormKey))) return;
-
-            if      (weapon.HasKeyword(Skyrim.Keyword.WeapTypeBattleaxe))  weapon.Data.Speed = Settings.Battleaxe.Speed;
-            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeDagger))     weapon.Data.Speed = Settings.Dagger.Speed;
-            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeGreatsword)) weapon.Data.Speed = Settings.Greatsword.Speed;
-            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeMace))       weapon.Data.Speed = Settings.Mace.Speed;
-            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeSword))      weapon.Data.Speed = Settings.Sword.Speed;
-            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeWarAxe))     weapon.Data.Speed = Settings.WarAxe.Speed;
-            else if (weapon.HasKeyword(Skyrim.Keyword.WeapTypeWarhammer))  weapon.Data.Speed = Settings.Warhammer.Speed;
-        }*/
     }
 }
