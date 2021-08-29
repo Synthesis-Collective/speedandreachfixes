@@ -50,9 +50,9 @@ namespace SpeedandReachFixes
         [MaintainOrder]
         [Tooltip("When multiple weapon types apply to the same category, the priority level .")]
         public int Priority;
-        [Tooltip("The range of this weapon.")]
+        [Tooltip("The range of this weapon. A value of -1 means unchanged.")]
         public float Reach;
-        [Tooltip("The speed of this weapon.")]
+        [Tooltip("The speed of this weapon. A value of -1 means unchanged.")]
         public float Speed;
         [Tooltip("The keyword attached to this weapon type.")]
         public FormLink<IKeywordGetter> Keyword = new();
