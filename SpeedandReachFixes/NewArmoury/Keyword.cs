@@ -3,9 +3,9 @@ using Mutagen.Bethesda.Skyrim;
 
 namespace Mutagen.Bethesda.FormKeys.SkyrimSE
 {
-    public class NewArmoury
+    public static class NewArmoury
     {
-        public class Keyword
+        public static class Keyword
         {
             private static readonly ModKey AnimatedArmoury = ModKey.FromNameAndExtension("NewArmoury.esp");
             public static readonly FormLink<IKeywordGetter> WeapTypeCestus = AnimatedArmoury.MakeFormKey(0x19aab3);
