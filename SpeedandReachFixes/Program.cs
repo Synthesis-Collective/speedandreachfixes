@@ -91,17 +91,23 @@ namespace SpeedandReachFixes
             // SELECT STATS
             Console.WriteLine("Processing Weapon: " + weapon.EditorID);
             var stats = Settings.GetHighestPriorityStats(weapon, out var chosenKeyword);
-            Console.WriteLine("\tUsing stats for keyword: " + chosenKeyword);
+            if (chosenKeyword.Any())
+                Console.WriteLine("\tKYWD  = " + chosenKeyword);
+            else if (weapon.Keywords != null) {
+                Console.WriteLine("No stats found for keywords:");
+                for (var i = 0; i < weapon.Keywords?.Count; ++i)
+                    Console.WriteLine('\t' + weapon.Keywords[i].FormKey.IDString());
+            }
+            else
+                Console.WriteLine("No keywords assigned to weapon: " + weapon.EditorID);
             
             // REACH
             weapon.Data.Reach = stats.GetReach(weapon.Data.Reach, out var changedReach);
             if (changedReach) Console.WriteLine("\tReach = " + weapon.Data.Reach.ToString("F"));
             
             // Revert any reach changes to giant clubs as they may cause issues with the AI
-            if ( weapon.EditorID?.ContainsInsensitive("GiantClub") == true ) {
+            if ( weapon.EditorID?.ContainsInsensitive("GiantClub") == true )
                 weapon.Data.Reach = 1.3F;
-                
-            }
 
             // SPEED
             weapon.Data.Speed = stats.GetSpeed(weapon.Data.Speed, out var changedSpeed);

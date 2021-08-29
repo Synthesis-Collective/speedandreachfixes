@@ -88,7 +88,7 @@ namespace SpeedandReachFixes
         
         [SettingName("Weapon Groups"), Tooltip("Change the stats of each weapon group."), JsonDiskName("weapon-groups")]
         public List<Stats> WeaponStats = new()
-        {
+        { // TODO: Add Bow Weapon Type
             new Stats(1, Skyrim.Keyword.WeapTypeBattleaxe, 0.666667F, 0.8275F),
             new Stats(1, Skyrim.Keyword.WeapTypeDagger, 1.35F, 0.533F),
             new Stats(1, Skyrim.Keyword.WeapTypeGreatsword, 0.85F, 0.88F),
@@ -142,7 +142,7 @@ namespace SpeedandReachFixes
                 if (priority <= highest) continue;
                 highestStats = stats;
                 highest = priority;
-                chosenKeyword = stats.Keyword.ToString();
+                chosenKeyword = stats.Keyword.FormKey.IDString();
             }
             return highestStats;
         }
