@@ -47,14 +47,14 @@ namespace SpeedandReachFixes
             
             foreach (var gmst in state.LoadOrder.PriorityOrder.GameSetting().WinningOverrides())
             {
-                if (Settings.Gmst.CombatDistance && gmst.EditorID?.Contains("fCombatDistance") == true)
+                if (Settings.Gmst.CombatDistance && (gmst.EditorID?.Contains("fCombatDistance") == true))
                 {
                     var modifiedGmst = state.PatchMod.GameSettings.GetOrAddAsOverride(gmst);
                     ((GameSettingFloat)modifiedGmst).Data = 141;
                     ++count;
                 }
 
-                if (Settings.Gmst.CombatBashReach && gmst.EditorID?.Contains("fCombatBashReach") == true)
+                if (Settings.Gmst.CombatBashReach && (gmst.EditorID?.Contains("fCombatBashReach") == true))
                 {
                     var modifiedGmst = state.PatchMod.GameSettings.GetOrAddAsOverride(gmst);
                     ((GameSettingFloat)modifiedGmst).Data = 61;
@@ -87,23 +87,27 @@ namespace SpeedandReachFixes
         private static bool AdjustWeaponStats(Weapon weapon)
         {
             if (weapon.Data == null) return false;
-            var stats = Settings.GetHighestPriorityStats(weapon);
-            weapon.Data.Speed = stats.GetSpeed(weapon.Data.Speed, out var changedSpeed);
+            
+            // SELECT STATS
+            Console.WriteLine("Processing Weapon: " + weapon.EditorID);
+            var stats = Settings.GetHighestPriorityStats(weapon, out var chosenKeyword);
+            Console.WriteLine("\tUsing stats for keyword: " + chosenKeyword);
+            
+            // REACH
             weapon.Data.Reach = stats.GetReach(weapon.Data.Reach, out var changedReach);
+            if (changedReach) Console.WriteLine("\tReach = " + weapon.Data.Reach.ToString("F"));
             
-            if (changedSpeed || changedReach) // no changes made
-                Console.WriteLine("Finished Processing: " + weapon.EditorID);
-            if (changedSpeed)
-                Console.WriteLine("\tSpeed = " + weapon.Data.Speed.ToString("F"));
-            if (changedReach) {
-                Console.WriteLine("\tReach = " + weapon.Data.Reach.ToString("F"));
-                if ( weapon.EditorID?.ContainsInsensitive("GiantClub") == true )
-                    weapon.Data.Reach = 1.3F;
-            }
-            
-            // Revert any changes to giant clubs as they may cause issues with the AI
-            if ( weapon.EditorID?.ContainsInsensitive("GiantClub") == true )
+            // Revert any reach changes to giant clubs as they may cause issues with the AI
+            if ( weapon.EditorID?.ContainsInsensitive("GiantClub") == true ) {
                 weapon.Data.Reach = 1.3F;
+                
+            }
+
+            // SPEED
+            weapon.Data.Speed = stats.GetSpeed(weapon.Data.Speed, out var changedSpeed);
+            if (changedSpeed) Console.WriteLine("\tSpeed = " + weapon.Data.Speed.ToString("F"));
+            
+            Console.WriteLine(); // newline to make reading logs easier
             return changedSpeed || changedReach;
         }
     }

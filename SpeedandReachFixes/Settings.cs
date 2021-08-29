@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Mutagen.Bethesda.FormKeys.SkyrimSE;
@@ -9,10 +8,17 @@ using Noggog;
 
 namespace SpeedandReachFixes
 {
+    internal static class Constants {
+        public const float NullFloat = -1F; // default value assigned to null stat values
+    }
+    /**
+     * @class GameSettings
+     * @brief Contains settings related to GMST (Game Setting) records.
+     */
     public class GameSettings
     {
         [MaintainOrder]
-        [SettingName("Swing Angle Changes"), Tooltip("This setting is experimental! Only use it if you know what you're doing!")]
+        [SettingName("[EXPERIMENTAL] Change Swing Angle for all races."), Tooltip("Don't change this unless you know what you're doing!")]
         public bool WeaponSwingAngleChanges = true;
         [SettingName("Fix Object Reach"), Tooltip("Changes how far away weapons can hit objects.")]
         public bool ObjectHitWeaponReach = true;
@@ -21,69 +27,58 @@ namespace SpeedandReachFixes
         [SettingName("Fix Shield Bash Reach")]
         public bool CombatBashReach = true;
     }
-    public class Matchable
+    /**
+     * @class Stats
+     * @brief Represents the stats associated with a given weapon keyword, and an optional user-customizable matchlist to allow
+     */
+    public class Stats
     {
-        [MaintainOrder]
-        [Tooltip("The stats of the highest applicable category win overrides.")]
-        public int Priority;
-        [Tooltip("Weapons with this keyword are considered applicable.")]
-        public FormLink<IKeywordGetter> Keyword = null!;
-        [SettingName("Common Names"), Tooltip("Weapons with any of these words in their editor IDs are considered applicable.")]
-        public List<string> MatchList = new ();
-
-        private bool HasMatch(string id)
-        {
-            return MatchList.Any(match => id.Contains(match, StringComparison.OrdinalIgnoreCase));
-        }
-        // Retrieve the priority level of this instance, or -1 if it doesn't match anything.
-        public int GetPriority(string id, ExtendedList<IFormLinkGetter<IKeywordGetter>>? keywords)
-        {
-            var valid = false;
-            if (keywords != null && keywords.Any())
-                foreach (var _ in keywords.Where(kywd => Keyword.Equals(kywd)))
-                    valid = true;
-            else
-                valid = true;
-            if (valid || HasMatch(id))
-                return Priority;
-            return -1;
-        }
-    }
-    
-    public class Stats : Matchable
-    {
-        public Stats(int priority, FormLink<IKeywordGetter> keyword, float? speed = null, float? reach = null, List<string>? matchlist = null)
+        public Stats(int priority, FormLink<IKeywordGetter> keyword, float? speed = null, float? reach = null /*, List<string>? matchlist = null*/)
         {
             Priority = priority;
             Keyword = keyword;
-            Reach = reach ?? 0F;
-            Speed = speed ?? 0F;
-            if (matchlist != null)
-                MatchList = matchlist;
+            Reach = reach ?? Constants.NullFloat;
+            Speed = speed ?? Constants.NullFloat;
         }
 
         public Stats()
         {
             Priority = 0;
-            Reach = 0F;
-            Speed = 0F;
+            Reach = Constants.NullFloat;
+            Speed = Constants.NullFloat;
         }
         [MaintainOrder]
-        
+        [Tooltip("When multiple weapon types apply to the same category, the priority level .")]
+        public int Priority;
         [Tooltip("The range of this weapon.")]
         public float Reach;
         [Tooltip("The speed of this weapon.")]
         public float Speed;
+        [Tooltip("The keyword attached to this weapon type.")]
+        public FormLink<IKeywordGetter> Keyword = new();
         
         public float GetReach(float reach, out bool isModified)
         {
-            isModified = !Reach.Equals(reach) && !Reach.Equals(0F);
+            isModified = !Reach.Equals(reach) && !Reach.Equals(Constants.NullFloat);
             return isModified ? Reach : reach;
         }
         public float GetSpeed(float speed, out bool isModified)
         {
-            isModified = !Speed.Equals(speed) && !Reach.Equals(0F);
+            isModified = !Speed.Equals(speed) && !Reach.Equals(Constants.NullFloat);
             return isModified ? Speed : speed;
+        }
+        // Retrieve the priority level of this instance, or -1 if it doesn't match anything.
+        public int GetPriority(string id, ExtendedList<IFormLinkGetter<IKeywordGetter>>? keywords)
+        {
+            var valid = false;
+            if ((keywords != null) && keywords.Any())
+                foreach (var _ in keywords.Where(kywd => Keyword.Equals(kywd)))
+                    valid = true;
+            else
+                valid = true;
+            if (valid)
+                return Priority;
+            return -1;
         }
     }
 
@@ -112,16 +107,42 @@ namespace SpeedandReachFixes
             new Stats(2, NewArmoury.Keyword.WeapTypeWhip, null, 1.1F)
         };
 
-        public Stats GetHighestPriorityStats(Weapon weapon)
+        /*public Stats GetHighestPriorityStatsFuzzy(Weapon weapon)
+        {
+            Stats highest = new();
+            var reachPriority = 0; // priority of last selected reach value
+            var speedPriority = 0; // priority of last selected speed value
+            foreach (var match in WeaponStats) {
+                // Get match priority
+                var priority = match.GetPriority(weapon.EditorID!, weapon.Keywords);
+                // Reach
+                var highestReachNull = highest.Reach.Equals(-1F);
+                if (highestReachNull || (!highest.Reach.Equals(match.Reach) && (priority > reachPriority)))  {
+                    highest.Reach = match.Reach;
+                    reachPriority = priority;
+                }
+                // Speed
+                var highestSpeedNull = highest.Speed.Equals(-1F);
+                if (highestSpeedNull || (!highest.Speed.Equals(match.Speed) && (priority > speedPriority))) {
+                    highest.Speed = match.Speed;
+                    speedPriority = priority;
+                }
+            }
+            return highest;
+        }*/
+
+        public Stats GetHighestPriorityStats(Weapon weapon, out string chosenKeyword)
         {
             Stats highestStats = new();
             var highest = 0;
+            chosenKeyword = "";
             foreach (var stats in WeaponStats)
             {
                 var priority = stats.GetPriority(weapon.EditorID!, weapon.Keywords);
                 if (priority <= highest) continue;
                 highestStats = stats;
                 highest = priority;
+                chosenKeyword = stats.Keyword.ToString();
             }
             return highestStats;
         }
