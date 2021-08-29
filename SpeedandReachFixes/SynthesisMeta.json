@@ -1,0 +1,8 @@
+{
+  "Nickname": "Speed and Reach Fixes Upgraded",
+  "Visibility": "Hidden",
+  "OneLineDescription": "Upgraded version of the Speed and Reach Fixes patcher.",
+  "LongDescription": "Speed and Reach Fixes patcher with a more advanced settings system based on priority.",
+  "PreferredAutoVersioning": "Default",
+  "RequiredMods": []
+}
