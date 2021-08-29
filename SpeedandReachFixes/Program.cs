@@ -26,34 +26,35 @@ namespace SpeedandReachFixes
         public static void RunPatch(IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
         {
             var count = 0;
-            state.PatchMod.GameSettings.Add(new GameSettingFloat(state.PatchMod.GetNextFormKey(), state.PatchMod.SkyrimRelease)
+            if (Settings.Gmst.ObjectHitWeaponReach)
             {
-                EditorID = "fObjectHitWeaponReach",
-                Data = 81
-            });
-
-            state.PatchMod.GameSettings.Add(new GameSettingFloat(state.PatchMod.GetNextFormKey(), state.PatchMod.SkyrimRelease)
-            {
-                EditorID = "fObjectHitTwoHandReach",
-                Data = 135
-            });
-
-            state.PatchMod.GameSettings.Add(new GameSettingFloat(state.PatchMod.GetNextFormKey(), state.PatchMod.SkyrimRelease)
-            {
-                EditorID = "fObjectHitH2HReach",
-                Data = 61
-            });
-
+                state.PatchMod.GameSettings.Add(new GameSettingFloat(state.PatchMod.GetNextFormKey(), state.PatchMod.SkyrimRelease)
+                {
+                    EditorID = "fObjectHitWeaponReach",
+                    Data = 81
+                });
+                state.PatchMod.GameSettings.Add(new GameSettingFloat(state.PatchMod.GetNextFormKey(), state.PatchMod.SkyrimRelease)
+                {
+                    EditorID = "fObjectHitTwoHandReach",
+                    Data = 135
+                });
+                state.PatchMod.GameSettings.Add(new GameSettingFloat(state.PatchMod.GetNextFormKey(), state.PatchMod.SkyrimRelease)
+                {
+                    EditorID = "fObjectHitH2HReach",
+                    Data = 61
+                });
+            }
+            
             foreach (var gmst in state.LoadOrder.PriorityOrder.GameSetting().WinningOverrides())
             {
-                if (gmst.EditorID?.Contains("fCombatDistance") == true)
+                if (Settings.Gmst.CombatDistance && gmst.EditorID?.Contains("fCombatDistance") == true)
                 {
                     var modifiedGmst = state.PatchMod.GameSettings.GetOrAddAsOverride(gmst);
                     ((GameSettingFloat)modifiedGmst).Data = 141;
                     ++count;
                 }
 
-                if (gmst.EditorID?.Contains("fCombatBashReach") == true)
+                if (Settings.Gmst.CombatBashReach && gmst.EditorID?.Contains("fCombatBashReach") == true)
                 {
                     var modifiedGmst = state.PatchMod.GameSettings.GetOrAddAsOverride(gmst);
                     ((GameSettingFloat)modifiedGmst).Data = 61;
@@ -62,7 +63,7 @@ namespace SpeedandReachFixes
             }
             Console.WriteLine("Done adjusting Game Settings");
 
-            if (Settings.WeaponSwingAngleChanges)
+            if (Settings.Gmst.WeaponSwingAngleChanges)
             {
                 foreach (var race in state.LoadOrder.PriorityOrder.Race().WinningOverrides())
                 {
@@ -87,19 +88,21 @@ namespace SpeedandReachFixes
         {
             if (weapon.Data == null) return false;
             var stats = Settings.GetHighestPriorityStats(weapon);
-            bool changedSpeed = false, changedReach = false;
-            weapon.Data.Speed = stats.GetSpeed(weapon.Data.Speed, out changedSpeed);
-            weapon.Data.Reach = weapon.EditorID?.ContainsInsensitive("GiantClub") == true ? 1.3F : stats.GetReach(weapon.Data.Reach, out changedReach);
+            weapon.Data.Speed = stats.GetSpeed(weapon.Data.Speed, out var changedSpeed);
+            weapon.Data.Reach = stats.GetReach(weapon.Data.Reach, out var changedReach);
             
             if (changedSpeed || changedReach) // no changes made
                 Console.WriteLine("Finished Processing: " + weapon.EditorID);
             if (changedSpeed)
                 Console.WriteLine("\tSpeed = " + weapon.Data.Speed.ToString("F"));
-            if (changedReach)
+            if (changedReach) {
                 Console.WriteLine("\tReach = " + weapon.Data.Reach.ToString("F"));
+                if ( weapon.EditorID?.ContainsInsensitive("GiantClub") == true )
+                    weapon.Data.Reach = 1.3F;
+            }
             
             // Revert any changes to giant clubs as they may cause issues with the AI
-            if (weapon.EditorID?.ContainsInsensitive("GiantClub") == true)
+            if ( weapon.EditorID?.ContainsInsensitive("GiantClub") == true )
                 weapon.Data.Reach = 1.3F;
             return changedSpeed || changedReach;
         }

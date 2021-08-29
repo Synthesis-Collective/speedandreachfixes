@@ -9,6 +9,18 @@ using Noggog;
 
 namespace SpeedandReachFixes
 {
+    public class GameSettings
+    {
+        [MaintainOrder]
+        [SettingName("Swing Angle Changes"), Tooltip("This setting is experimental! Only use it if you know what you're doing!")]
+        public bool WeaponSwingAngleChanges = true;
+        [SettingName("Fix Object Reach"), Tooltip("Changes how far away weapons can hit objects.")]
+        public bool ObjectHitWeaponReach = true;
+        [SettingName("Fix Combat Distance")]
+        public bool CombatDistance = true;
+        [SettingName("Fix Shield Bash Reach")]
+        public bool CombatBashReach = true;
+    }
     public class Matchable
     {
         [MaintainOrder]
@@ -19,11 +31,11 @@ namespace SpeedandReachFixes
         [SettingName("Common Names"), Tooltip("Weapons with any of these words in their editor IDs are considered applicable.")]
         public List<string> MatchList = new ();
 
-        public bool HasMatch(string id)
+        private bool HasMatch(string id)
         {
             return MatchList.Any(match => id.Contains(match, StringComparison.OrdinalIgnoreCase));
         }
-
+        // Retrieve the priority level of this instance, or -1 if it doesn't match anything.
         public int GetPriority(string id, ExtendedList<IFormLinkGetter<IKeywordGetter>>? keywords)
         {
             var valid = false;
@@ -34,7 +46,7 @@ namespace SpeedandReachFixes
                 valid = true;
             if (valid || HasMatch(id))
                 return Priority;
-            return 0;
+            return -1;
         }
     }
     
@@ -44,17 +56,8 @@ namespace SpeedandReachFixes
         {
             Priority = priority;
             Keyword = keyword;
-            
-            if (reach != null)
-                Reach = reach.Value;
-            else
-                Reach = -0.0f;
-            
-            if (speed != null)
-                Speed = speed.Value;
-            else
-                Speed = -0.0f;
-            
+            Reach = reach ?? 0F;
+            Speed = speed ?? 0F;
             if (matchlist != null)
                 MatchList = matchlist;
         }
@@ -74,21 +77,19 @@ namespace SpeedandReachFixes
         
         public float GetReach(float reach, out bool isModified)
         {
-            isModified = Reach != 0F;
+            isModified = !Reach.Equals(reach) && !Reach.Equals(0F);
             return isModified ? Reach : reach;
         }
         public float GetSpeed(float speed, out bool isModified)
         {
-            isModified = Speed != 0F;
+            isModified = !Speed.Equals(speed) && !Reach.Equals(0F);
             return isModified ? Speed : speed;
         }
     }
 
     public class Settings
     {
-        [MaintainOrder]
-        [SettingName("Swing Angle Changes"), Tooltip("This setting is experimental! Only use it if you know what you're doing!")]
-        public bool WeaponSwingAngleChanges;
+        public GameSettings Gmst = new();
         
         [SettingName("Weapon Groups"), Tooltip("Change the stats of each weapon group."), JsonDiskName("weapon-groups")]
         public List<Stats> WeaponStats = new()
