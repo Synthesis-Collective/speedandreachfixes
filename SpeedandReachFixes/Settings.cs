@@ -4,14 +4,19 @@ using System.Linq;
 using Mutagen.Bethesda.FormKeys.SkyrimSE;
 using Mutagen.Bethesda.Plugins;
 using Mutagen.Bethesda.Skyrim;
+using Mutagen.Bethesda.WPF.Reflection.Attributes;
 using Noggog;
 
 namespace SpeedandReachFixes
 {
     public class Matchable
     {
+        [MaintainOrder]
+        [Tooltip("The stats of the highest applicable category win overrides.")]
         public int Priority;
+        [Tooltip("Weapons with this keyword are considered applicable.")]
         public FormLink<IKeywordGetter> Keyword = null!;
+        [SettingName("Common Names"), Tooltip("Weapons with any of these words in their editor IDs are considered applicable.")]
         public List<string> MatchList = new ();
 
         public bool HasMatch(string id)
@@ -32,15 +37,15 @@ namespace SpeedandReachFixes
             return 0;
         }
     }
-
+    
     public class Stats : Matchable
     {
         public Stats(int priority, FormLink<IKeywordGetter> keyword, float? speed = null, float? reach = null, List<string>? matchlist = null)
         {
             Priority = priority;
             Keyword = keyword;
-            Speed = speed;
-            Reach = reach;
+            _speed = speed;
+            _reach = reach;
             if (matchlist != null)
                 MatchList = matchlist;
         }
@@ -48,28 +53,43 @@ namespace SpeedandReachFixes
         public Stats()
         {
             Priority = 0;
-            Reach = null;
-            Speed = null;
+            _reach = -0.0F;
+            _speed = -0.0F;
         }
-        public float? Reach;
-        public float? Speed;
+        [MaintainOrder]
+        [Ignore]
+        private float? _reach;
+        [Ignore]
+        private float? _speed;
 
+        [Tooltip("The range of this weapon.")]
+        public float Reach = -0.0F;
+        [Tooltip("The speed of this weapon.")]
+        public float Speed = -0.0F;
+        
         public float GetReach(float reach, out bool isModified)
         {
-            isModified = Reach != null;
-            return Reach ?? reach;
+            if (Math.Abs(Reach - (-0.0F)) > 0.001F)
+                _reach = Reach;
+            isModified = _reach != null;
+            return _reach ?? reach;
         }
         public float GetSpeed(float speed, out bool isModified)
         {
-            isModified = Speed != null;
-            return Speed ?? speed;
+            if (Math.Abs(Speed - (-0.0F)) > 0.001F)
+                _speed = Speed;
+            isModified = _speed != null;
+            return _speed ?? speed;
         }
     }
 
     public class Settings
     {
+        [MaintainOrder]
+        [SettingName("Swing Angle Changes"), Tooltip("This setting is experimental! Only use it if you know what you're doing!")]
         public bool WeaponSwingAngleChanges;
         
+        [SettingName("Weapon Groups"), Tooltip("Change the stats of each weapon group."), JsonDiskName("weapon-groups")]
         public List<Stats> WeaponStats = new()
         {
             new Stats(1, Skyrim.Keyword.WeapTypeBattleaxe, 0.666667F, 0.8275F),
