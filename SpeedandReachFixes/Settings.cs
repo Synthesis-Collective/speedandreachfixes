@@ -124,7 +124,10 @@ namespace SpeedandReachFixes
             new WeaponStats(2, true, NewArmoury.Keyword.WeapTypeRapier, Constants.NullFloat, 0.2F),
             new WeaponStats(2, true, NewArmoury.Keyword.WeapTypeSpear),
             new WeaponStats(2, true, NewArmoury.Keyword.WeapTypeWhip, Constants.NullFloat, 0.5F),
-            new WeaponStats(2, true, WayOfTheMonk.Keyword.WeapTypeUnarmed),
+            // TODO: Find appropriate value for katanas, curved swords, and WOM unarmed weapons
+            new WeaponStats(2, true, NWTA.Keyword.WeapTypeKatana),
+            new WeaponStats(2, true, NWTA.Keyword.WeapTypeCurvedSword),
+            new WeaponStats(2, true, WayOfTheMonk.Keyword.WeapTypeUnarmed)
         };
         [SettingName("Game Setting Changes"), Tooltip("Don't change these unless you know what you're doing!")]
         public GameSettings GameSettings = new();
