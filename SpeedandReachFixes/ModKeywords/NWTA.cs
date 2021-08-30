@@ -3,7 +3,7 @@ using Mutagen.Bethesda.Skyrim;
 
 namespace Mutagen.Bethesda.FormKeys.SkyrimSE
 {
-    public static class NWTA 
+    public static class NWTA // New Weapon Types and Animations
     {
         public static class Keyword
         {
