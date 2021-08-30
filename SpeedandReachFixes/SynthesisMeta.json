@@ -1,8 +1,0 @@
-{
-  "Nickname": "SpeedandReachFixes",
-  "Visibility": "Visible",
-  "OneLineDescription": "Speed and Reach Fixes Patcher with more options.",
-  "LongDescription": "Same as the SpeedandReachFixes patcher but has additional configuration options, allowing per-keyword customization for both Speed & Reach..",
-  "PreferredAutoVersioning": "Default",
-  "RequiredMods": []
-}
