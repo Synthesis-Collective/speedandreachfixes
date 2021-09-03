@@ -84,8 +84,10 @@ namespace SpeedandReachFixes
                 if (weap.Data == null) continue;
                 var weapon = state.PatchMod.Weapons.GetOrAddAsOverride(weap);
                 
-                if (Settings.ApplyChangesToWeapon(weapon))
+                if (Settings.ApplyChangesToWeapon(weapon)) {
                     Console.WriteLine("Successfully modified weapon: " + weapon.EditorID);
+                    ++count;
+                }
                 else
                     state.PatchMod.Weapons.Remove(weap);
             }
