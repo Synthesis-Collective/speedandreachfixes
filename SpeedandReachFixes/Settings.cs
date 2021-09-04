@@ -28,13 +28,13 @@ namespace SpeedandReachFixes {
         [Tooltip("Enables this category. It is highly recommended that you leave this enabled!")] 
         public bool Enabled = true;
 
-        [SettingName( "fObjectHitWeaponReach" ), Tooltip( "Modifier applied to the reach of one-handed weapons.")]
+        [SettingName( "fObjectHitWeaponReach" ), Tooltip( "Modifier added to the reach of one-handed weapons.")]
         public float fObjectHitWeaponReach = 81F;
 
-        [SettingName( "fObjectHitTwoHandReach" ), Tooltip( "Modifier applied to the reach of two-handed weapons.")]
+        [SettingName( "fObjectHitTwoHandReach" ), Tooltip( "Modifier added to the reach of two-handed weapons." )]
         public float fObjectHitTwoHandReach = 135F;
 
-        [SettingName( "fObjectHitH2HReach" ), Tooltip( "Modifier applied to unarmed reach.")]
+        [SettingName( "fObjectHitH2HReach" ), Tooltip( "Modifier added to unarmed reach." )]
         public float fObjectHitH2HReach = 61F;
 
 		// Adds the game settings from this class to the current patcher state
@@ -100,10 +100,10 @@ namespace SpeedandReachFixes {
     {
         [MaintainOrder]
 		// Combat reach
-		[SettingName( "Base Combat Reach" ), Tooltip( "Melee Reach Formula: ( reach = { fCombatDistance | fCombatBashReach } * NPCRaceScale * WeaponReach + { fObjectHitWeaponReach | fObjectHitTwoHandReach | fObjectHitH2HReach } )" )]
+		[SettingName( "Base Combat Reach Multipliers" ), Tooltip( "Melee Reach Formula: ( reach = { fCombatDistance | fCombatBashReach } * NPCRaceScale * WeaponReach + { fObjectHitWeaponReach | fObjectHitTwoHandReach | fObjectHitH2HReach } )" )]
 		public GameSettingsCombatReach CombatReach = new();
 		// Weapon type reach
-		[SettingName("Weapon Type Reach Modifiers"), Tooltip("Melee Reach Formula: ( reach = ( fCombatDistance | fCombatBashReach ) * NPCRaceScale * WeaponReach + ( fObjectHitWeaponReach | fObjectHitTwoHandReach | fObjectHitH2HReach ) )")]
+		[SettingName( "Weapon Type Reach Modifiers" ), Tooltip("Melee Reach Formula: ( reach = ( fCombatDistance | fCombatBashReach ) * NPCRaceScale * WeaponReach + ( fObjectHitWeaponReach | fObjectHitTwoHandReach | fObjectHitH2HReach ) )")]
         public GameSettingsWeaponTypeReach WeaponTypeReach = new();
 		
 		public int AddGameSettingsToPatch(IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
