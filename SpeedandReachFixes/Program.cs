@@ -38,10 +38,11 @@ namespace SpeedandReachFixes {
 						continue; // skip this race if it does not have the ActorTypeNPC keyword
 
 					var last = count;
-					foreach ( var attack in state.PatchMod.Races.GetOrAddAsOverride( race ).Attacks.Where( attack => attack.AttackData != null ) ) // iterate through all attacks that have attack data.
-					{
+					foreach ( var attack in state.PatchMod.Races.GetOrAddAsOverride( race ).Attacks ) {
+						if ( attack.AttackData == null )
+							continue;
 						attack.AttackData!.StrikeAngle = Settings.GetModifiedStrikeAngle( attack.AttackData.StrikeAngle );
-						++count;
+						++count; // iterate counter by one for each modified attack
 					}
 					Console.WriteLine("Modified " + (count - last) + " attacks for race: " + race.EditorID);
 				}
