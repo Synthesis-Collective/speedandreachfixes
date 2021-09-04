@@ -48,10 +48,15 @@ namespace SpeedandReachFixes {
 				}
             
 			// Apply speed and reach fixes to all weapons.
-            foreach (var weap in state.LoadOrder.PriorityOrder.WinningOverrides<IWeaponGetter>()) {
+            foreach (var weap in state.LoadOrder.PriorityOrder.WinningOverrides<IWeaponGetter>()) 
+			{
 				if ( weap.Data == null )
 					continue;
-                if (Settings.ApplyChangesToWeapon(state.PatchMod.Weapons.GetOrAddAsOverride(weap))) {
+
+				var weapon = weap.DeepCopy(); // copy weap record to temp
+
+				if (Settings.ApplyChangesToWeapon( weapon )) { // if temp record was modified
+					state.PatchMod.Weapons.Set(weapon); // set weap record to temp
                     Console.WriteLine("Successfully modified weapon: " + weap.EditorID);
                     ++count;
                 }

@@ -280,11 +280,12 @@ namespace SpeedandReachFixes {
 		// Applies the current weapon stats configuration to a given weapon ref.
         public bool ApplyChangesToWeapon(Weapon weapon)
         {
-			if ( weapon.EditorID == null )
+			if ( weapon == null )
 				return false;
+
             var stats = GetHighestPriorityStats(weapon);
 
-            if ( stats.ShouldSkip() )
+            if ( stats == null || stats.ShouldSkip() )
                 return false;
 
             weapon.Data!.Reach = stats.GetReach(weapon.Data.Reach, out var changedReach);
