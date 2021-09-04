@@ -184,7 +184,7 @@ namespace SpeedandReachFixes {
             return Constants.DefaultPriority;
         }
 		// Returns true if the keyword is not set, or the reach and speed values are both unset.
-        public bool IsNull()
+        public bool ShouldSkip()
         {
             return (Keyword == null) || (Reach.Equals(Constants.DefaultPriority) && Speed.Equals(Constants.DefaultPriority));
         }
@@ -225,8 +225,8 @@ namespace SpeedandReachFixes {
             new WeaponStats(2, true, NewArmoury.Keyword.WeapTypeRapier, Constants.NullFloat, 0.2F),
             new WeaponStats(2, true, NewArmoury.Keyword.WeapTypeSpear),
             new WeaponStats(2, true, NewArmoury.Keyword.WeapTypeWhip, Constants.NullFloat, 0.5F),
-            // TODO: Find appropriate values for NWTA & WotM unarmed weapons
-            new WeaponStats(2, true, NWTA.Keyword.WeapTypeKatana),
+			// TODO: Find appropriate values for NWTA & WotM unarmed weapons
+			new WeaponStats(2, true, NWTA.Keyword.WeapTypeKatana),
             new WeaponStats(2, true, NWTA.Keyword.WeapTypeCurvedSword),
             new WeaponStats(2, true, WayOfTheMonk.Keyword.WeapTypeUnarmed)
         };
@@ -257,7 +257,7 @@ namespace SpeedandReachFixes {
         {
             var stats = GetHighestPriorityStats(weapon);
 
-            if (stats.IsNull())
+            if (stats.ShouldSkip())
                 return false;
 
             weapon.Data!.Reach = stats.GetReach(weapon.Data.Reach, out var changedReach);
