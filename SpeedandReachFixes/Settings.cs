@@ -122,7 +122,7 @@ namespace SpeedandReachFixes {
 		[MaintainOrder]
 
 		[Tooltip( "The keyword attached to this weapon type." )]
-		public FormLink<IKeywordGetter>? Keyword;
+		public FormLink<IKeywordGetter> Keyword;
 
 		[Tooltip( "When multiple weapon types apply to the same category, the highest priority wins." )]
 		public int Priority;
@@ -141,7 +141,8 @@ namespace SpeedandReachFixes {
         {
             Priority = 0;
 			IsAdditiveModifier = false;
-            Keyword = null;
+			Keyword = new();
+			Keyword.SetToNull(); // set keyword to null (all 0s)
             Reach = Constants.NullFloat;
             Speed = Constants.NullFloat;
         }
@@ -193,19 +194,20 @@ namespace SpeedandReachFixes {
 		public float GetSpeed(float current, out bool changed)
         {
             return GetFloat(current, Speed, out changed);
-        }
+		}
 
-        // Retrieve the priority level of this instance, or -1 if it doesn't match anything.
-        public int GetPriority(ExtendedList<IFormLinkGetter<IKeywordGetter>>? keywords)
+		// Returns true if the keyword is set to null, or if both the speed and reach values are unset.
+		public bool ShouldSkip()
+		{
+			return ( Keyword.IsNull ) || ( Reach.Equals( Constants.DefaultPriority ) && Speed.Equals( Constants.DefaultPriority ) );
+		}
+
+		// Retrieve the priority level of this instance, or -1 if it doesn't apply to the given keywords.
+		public int GetPriority(ExtendedList<IFormLinkGetter<IKeywordGetter>>? keywords)
         {
-            if ((keywords != null) && (Keyword != null!) && keywords.Any(kywd => Keyword.Equals(kywd)))
+            if ((keywords != null) && (!ShouldSkip()) && keywords.Any(kywd => Keyword.Equals(kywd)))
                 return Priority;
             return Constants.DefaultPriority;
-        }
-		// Returns true if the keyword is not set, or the reach and speed values are both unset.
-        public bool ShouldSkip()
-        {
-            return (Keyword == null) || (Reach.Equals(Constants.DefaultPriority) && Speed.Equals(Constants.DefaultPriority));
         }
     }
 
