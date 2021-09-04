@@ -34,7 +34,10 @@ namespace SpeedandReachFixes
 
 			// Apply attack angle modifier for all races, if the modifier isn't set to 0
 			if ( !Settings.AttackStrikeAngleModifier.Equals( 0F ) )
-				foreach ( var race in state.LoadOrder.PriorityOrder.Race().WinningOverrides().Where( race => race.HasKeyword( Skyrim.Keyword.ActorTypeNPC ) ) ) { // iterate through all races that have the ActorTypeNPC keyword.
+				foreach ( var race in state.LoadOrder.PriorityOrder.Race().WinningOverrides() ) { // iterate through all races that have the ActorTypeNPC keyword.
+					if ( !race.HasKeyword( Skyrim.Keyword.ActorTypeNPC ) )
+						continue; // skip this race if it does not have the ActorTypeNPC keyword
+
 					var last = count;
 					foreach ( var attack in state.PatchMod.Races.GetOrAddAsOverride( race ).Attacks.Where( attack => attack.AttackData != null ) ) // iterate through all attacks that have attack data.
 					{

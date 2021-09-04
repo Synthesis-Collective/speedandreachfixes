@@ -8,20 +8,21 @@ using Mutagen.Bethesda.WPF.Reflection.Attributes;
 using Noggog;
 
 namespace SpeedandReachFixes {
-	/**
-     * @struct Constants
-     * @brief Contains default value constants used internally.
-     */
+	/// <summary>
+	/// Contains default value constants used internally.
+	/// </summary>
 	internal struct Constants
     {
-        public const float NullFloat = -0F; // default value assigned to null stat values
-        public const int DefaultPriority = -1; // default priority returned when no matches were found
+        public const float NullFloat = -0F; // default value assigned to null stat values, indicates that they should be skipped.
+        public const int DefaultPriority = -1; // default priority returned when no category matches were found
     }
 
-	/**
-	 * @class GameSettingsWeaponTypeReach
-	 * @brief Contains game settings related to weapon type reach modifiers, specifically fObjectHitWeaponReach, fObjectHitTwoHandReach, & fObjectHitH2HReach.
-	 */
+	/// <summary>
+	/// Contains game settings related to weapon type reach modifiers, specifically:
+	///		fObjectHitWeaponReach, 
+	///		fObjectHitTwoHandReach, 
+	///	  & fObjectHitH2HReach.
+	/// </summary>
 	public class GameSettingsWeaponTypeReach {
         [MaintainOrder]
 
@@ -60,11 +61,10 @@ namespace SpeedandReachFixes {
         }
     }
 
-	/**
-	 * @class GameSettingsCombatReach
-	 * @brief Contains game settings related to base reach multipliers, specifically fCombatDistance and fCombatBashReach.
-	 */
-    public class GameSettingsCombatReach {
+	/// <summary>
+	/// Contains game settings related to base reach multipliers, specifically fCombatDistance and fCombatBashReach.
+	/// </summary>
+	public class GameSettingsCombatReach {
         [MaintainOrder]
 
         [Tooltip("Enables this category. It is highly recommended that you leave this enabled!")]
@@ -92,11 +92,10 @@ namespace SpeedandReachFixes {
         }
     }
 
-    /**
-     * @class GameSettings
-     * @brief Contains settings related to GMST (Game Setting) records.
-     */
-    public class GameSettings
+	/// <summary>
+	/// Contains settings related to GMST (Game Setting) records.
+	/// </summary>
+	public class GameSettings
     {
         [MaintainOrder]
 		// Combat reach
@@ -115,11 +114,10 @@ namespace SpeedandReachFixes {
 		}
     }
 
-    /**
-     * @class WeaponStats
-     * @brief Represents the stats associated with a given weapon keyword, and an optional user-customizable matchlist to allow
-     */
-    public class WeaponStats
+	/// <summary>
+	/// Represents the stats associated with a given weapon keyword, as well as a priority level which determines the winning category if a weapon has multiple keywords.
+	/// </summary>
+	public class WeaponStats
     {
 		[MaintainOrder]
 
@@ -129,8 +127,8 @@ namespace SpeedandReachFixes {
 		[Tooltip( "When multiple weapon types apply to the same category, the highest priority wins." )]
 		public int Priority;
 
-		[SettingName("Modifier"), Tooltip("When checked, adds the specified values rather than overwriting them. Negative values will subtract.")] 
-		public bool IsModifier;
+		[SettingName("Is Additive Modifier"), Tooltip("When checked, adds the specified values rather than overwriting them. Negative values will subtract.")] 
+		public bool IsAdditiveModifier;
 
         [Tooltip("The range of this weapon. A modifier value of 0 means unchanged.")] 
 		public float Reach;
@@ -142,7 +140,7 @@ namespace SpeedandReachFixes {
         public WeaponStats()
         {
             Priority = 0;
-            IsModifier = false;
+			IsAdditiveModifier = false;
             Keyword = null;
             Reach = Constants.NullFloat;
             Speed = Constants.NullFloat;
@@ -152,32 +150,53 @@ namespace SpeedandReachFixes {
         public WeaponStats(int priority, bool modifier, FormLink<IKeywordGetter> keyword, float speed = Constants.NullFloat, float reach = Constants.NullFloat)
         {
             Priority = priority;
-            IsModifier = modifier;
+			IsAdditiveModifier = modifier;
             Keyword = keyword;
             Reach = reach;
             Speed = speed;
         }
 
-		// Private function that compares, modifies, and returns weapon stat values.
+		/// <summary>
+		/// Takes the current & member values for Reach / Speed, returns their sum if IsModifier is true, the member value if
+		/// Private function, only usable within WeaponStats
+		/// See GetReach() & GetSpeed() for public access functions.
+		/// </summary>
+		/// <param name="current">The current value of any given weapon's speed or reach stat.</param>
+		/// <param name="local">The member value of either Speed or Reach depending on which stat is being requested.</param>
+		/// <param name="changed">When true, the return value != current, else the returned value is equal to current.</param>
+		/// <returns>float</returns>
         private float GetFloat(float current, float local, out bool changed)
         {
-            changed = !local.Equals(current) && !local.Equals(Constants.NullFloat);
-            return changed ? IsModifier ? current + local : local : current;
+            changed = !local.Equals(current) && !local.Equals(Constants.NullFloat); // if current != local and local is set to a valid number
+			if (changed) // 
+				return IsAdditiveModifier ? current + local : local;
+			return current; // return unmodified
         }
 
-		// Modify a weapon reach value.
+		/// <summary>
+		/// Takes a weapon record's current reach value and calculates the final value using this category's configured stats.
+		/// </summary>
+		/// <param name="current">Current reach value</param>
+		/// <param name="changed">Set to true if the return value does not equal current</param>
+		/// <returns></returns>
         public float GetReach(float current, out bool changed)
         {
             return GetFloat(current, Reach, out changed);
         }
-		// Modify a weapon speed value.
-        public float GetSpeed(float current, out bool changed)
+
+		/// <summary>
+		/// Takes a weapon record's current speed value and calculates the final value using this category's configured stats.
+		/// </summary>
+		/// <param name="current">Current speed value</param>
+		/// <param name="changed">Set to true if the return value does not equal current</param>
+		/// <returns></returns>
+		public float GetSpeed(float current, out bool changed)
         {
             return GetFloat(current, Speed, out changed);
         }
 
         // Retrieve the priority level of this instance, or -1 if it doesn't match anything.
-        public int GetPriority(string id, ExtendedList<IFormLinkGetter<IKeywordGetter>>? keywords)
+        public int GetPriority(ExtendedList<IFormLinkGetter<IKeywordGetter>>? keywords)
         {
             if ((keywords != null) && (Keyword != null!) && keywords.Any(kywd => Keyword.Equals(kywd)))
                 return Priority;
@@ -190,11 +209,11 @@ namespace SpeedandReachFixes {
         }
     }
 
-	/**
-	 * @class Settings
-	 * @brief Contains all settings used throughout the patcher. This is the object passed to SetAutoGeneratedSettings.
-	 */
-    public class Settings
+	/// <summary>
+	/// Contains all settings used throughout the patcher.
+	/// This is the object passed to SetAutoGeneratedSettings.
+	/// </summary>
+	public class Settings
     {
         [MaintainOrder]
 
@@ -243,7 +262,7 @@ namespace SpeedandReachFixes {
             WeaponStats highestStats = new();
             var highest = 0;
             foreach (var stats in WeaponStats) {
-                var priority = stats.GetPriority(weapon.EditorID!, weapon.Keywords);
+                var priority = stats.GetPriority(weapon.Keywords);
                 if (priority <= highest) continue;
                 highestStats = stats;
                 highest = priority;
@@ -255,9 +274,11 @@ namespace SpeedandReachFixes {
 		// Applies the current weapon stats configuration to a given weapon ref.
         public bool ApplyChangesToWeapon(Weapon weapon)
         {
+			if ( weapon.EditorID == null )
+				return false;
             var stats = GetHighestPriorityStats(weapon);
 
-            if (stats.ShouldSkip())
+            if ( stats.ShouldSkip() )
                 return false;
 
             weapon.Data!.Reach = stats.GetReach(weapon.Data.Reach, out var changedReach);
