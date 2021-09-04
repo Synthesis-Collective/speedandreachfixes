@@ -4,7 +4,12 @@ using Mutagen.Bethesda.Plugins;
 
 namespace Mutagen.Bethesda.FormKeys.SkyrimSE
 {
-    public static partial class NewArmoury
+	/// <summary>
+	/// Adds support for keywords from the Animated Armoury mod.
+	/// Currently maintained nexus page(s) as of 21-09-04: (DAR) https://www.nexusmods.com/skyrimspecialedition/mods/35978 (Nemesis) https://www.nexusmods.com/skyrimspecialedition/mods/15394
+	/// NOTE: Keywords were generated using the DAR version, but they should be compatible with both.
+	/// </summary>
+	public static partial class NewArmoury
     {
         public readonly static ModKey ModKey = ModKey.FromNameAndExtension("NewArmoury.esp");
     }
