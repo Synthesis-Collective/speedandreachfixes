@@ -266,7 +266,8 @@ namespace SpeedandReachFixes {
             var highest = 0;
             foreach (var stats in WeaponStats) {
                 var priority = stats.GetPriority(weapon.Keywords);
-                if (priority <= highest) continue;
+                if (priority <= highest || stats.ShouldSkip())
+					continue;
                 highestStats = stats;
                 highest = priority;
             }
