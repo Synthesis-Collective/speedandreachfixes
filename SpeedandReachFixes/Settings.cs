@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Mutagen.Bethesda;
 using Mutagen.Bethesda.FormKeys.SkyrimSE;
 using Mutagen.Bethesda.Plugins;
 using Mutagen.Bethesda.Skyrim;
@@ -8,13 +7,12 @@ using Mutagen.Bethesda.Synthesis;
 using Mutagen.Bethesda.WPF.Reflection.Attributes;
 using Noggog;
 
-namespace SpeedandReachFixes
-{
-    /**
+namespace SpeedandReachFixes {
+	/**
      * @struct Constants
      * @brief Contains default value constants used internally.
      */
-    internal struct Constants
+	internal struct Constants
     {
         public const float NullFloat = -0F; // default value assigned to null stat values
         public const int DefaultPriority = -1; // default priority returned when no matches were found

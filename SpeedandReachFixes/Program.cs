@@ -41,7 +41,7 @@ namespace SpeedandReachFixes
 						attack.AttackData!.StrikeAngle = Settings.GetModifiedStrikeAngle( attack.AttackData.StrikeAngle );
 						++count;
 					}
-					Console.WriteLine("Successfully modified " + (count - last) + " attacks for race: " + race.EditorID);
+					Console.WriteLine("Modified " + (count - last) + " attacks for race: " + race.EditorID);
 				}
             
 			// Apply speed and reach fixes to all weapons.
