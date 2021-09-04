@@ -28,13 +28,13 @@ namespace SpeedandReachFixes {
         [Tooltip("Enables this category. It is highly recommended that you leave this enabled!")] 
         public bool Enabled = true;
 
-        [Tooltip("Modifier applied to the reach of one-handed weapons.")]
+        [SettingName( "fObjectHitWeaponReach" ), Tooltip( "Modifier applied to the reach of one-handed weapons.")]
         public float fObjectHitWeaponReach = 81F;
 
-        [Tooltip("Modifier applied to the reach of two-handed weapons.")]
+        [SettingName( "fObjectHitTwoHandReach" ), Tooltip( "Modifier applied to the reach of two-handed weapons.")]
         public float fObjectHitTwoHandReach = 135F;
 
-        [Tooltip("Modifier applied to unarmed reach.")]
+        [SettingName( "fObjectHitH2HReach" ), Tooltip( "Modifier applied to unarmed reach.")]
         public float fObjectHitH2HReach = 61F;
 
 		// Adds the game settings from this class to the current patcher state
@@ -70,10 +70,10 @@ namespace SpeedandReachFixes {
         [Tooltip("Enables this category. It is highly recommended that you leave this enabled!")]
         public bool Enabled = true;
 
-        [Tooltip("Melee Range Formula: ( range = fCombatDistance * NPCRaceScale * WeaponReach + { WeaponTypeReach } )")]
+        [SettingName( "fCombatDistance" ), Tooltip( "The base reach multiplier used for all attacks, except for shield bashes." )]
         public float fCombatDistance = 141F;
 
-        [Tooltip("Same as above, but for shield bashing.")]
+        [SettingName( "fCombatBashReach" ), Tooltip( "The base reach multiplier used for shield bash attacks.")]
         public float fCombatBashReach = 61F;
 
 		// Adds the game settings from this class to the current patcher state
