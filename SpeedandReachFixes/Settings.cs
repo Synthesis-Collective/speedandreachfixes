@@ -222,36 +222,39 @@ namespace SpeedandReachFixes {
         public GameSettings GameSettings = new();
 
 		// Race Attack Angle
-        [SettingName("Experimental Race Strike Angle Modifier"), Tooltip("Changes the angle at which an NPC can be hit by an attack. This value is a modifier and is added to the current value for all attacks and races. Set to 0 to disable.")]
+        [SettingName("Experimental Race Strike Angle Modifier")]
+		[Tooltip("Changes the angle at which an NPC can be hit by an attack. This value is added to the current value for all attacks and races. Set to 0 to disable, or negative to subtract.")]
         public float AttackStrikeAngleModifier = 7F;
 
 		// List of WeaponStats objects, each relating to a different weapon keyword.
-        [SettingName("Weapon Groups"), Tooltip("Change the stats of each weapon group.")] 
-        public List<WeaponStats> WeaponStats = new() {
-            new WeaponStats(1, false, Skyrim.Keyword.WeapTypeBattleaxe, 0.666667F, 0.8275F),
-            new WeaponStats(1, false, Skyrim.Keyword.WeapTypeDagger, 1.35F, 0.533F),
-            new WeaponStats(1, false, Skyrim.Keyword.WeapTypeGreatsword, 0.85F, 0.88F),
-            new WeaponStats(1, false, Skyrim.Keyword.WeapTypeMace, 0.9F, 0.75F),
-            new WeaponStats(1, false, Skyrim.Keyword.WeapTypeSword, 1.1F, 0.83F),
-            new WeaponStats(1, false, Skyrim.Keyword.WeapTypeWarAxe, 1F, 0.6F),
-            new WeaponStats(1, false, Skyrim.Keyword.WeapTypeWarhammer, 0.6F, 0.8F),
-            new WeaponStats(1, false, Skyrim.Keyword.WeapTypeBow),
-            new WeaponStats(2, true, NewArmoury.Keyword.WeapTypeCestus),
-            new WeaponStats(2, true, NewArmoury.Keyword.WeapTypeClaw, Constants.NullFloat, 0.41F),
-            new WeaponStats(2, true, NewArmoury.Keyword.WeapTypeHalberd, Constants.NullFloat, 0.58F),
-            new WeaponStats(2, true, NewArmoury.Keyword.WeapTypePike, Constants.NullFloat, 0.2F),
-            new WeaponStats(2, true, NewArmoury.Keyword.WeapTypeQtrStaff, Constants.NullFloat, 0.25F),
-            new WeaponStats(2, true, NewArmoury.Keyword.WeapTypeRapier, Constants.NullFloat, 0.2F),
-            new WeaponStats(2, true, NewArmoury.Keyword.WeapTypeSpear),
-            new WeaponStats(2, true, NewArmoury.Keyword.WeapTypeWhip, Constants.NullFloat, 0.5F),
+		[SettingName( "Weapon Groups" ), Tooltip( "Change the stats of each weapon group." )]
+		private List<WeaponStats> weaponStats = new() {
+			new WeaponStats( 1, false, Skyrim.Keyword.WeapTypeBattleaxe, 0.666667F, 0.8275F ),
+			new WeaponStats( 1, false, Skyrim.Keyword.WeapTypeDagger, 1.35F, 0.533F ),
+			new WeaponStats( 1, false, Skyrim.Keyword.WeapTypeGreatsword, 0.85F, 0.88F ),
+			new WeaponStats( 1, false, Skyrim.Keyword.WeapTypeMace, 0.9F, 0.75F ),
+			new WeaponStats( 1, false, Skyrim.Keyword.WeapTypeSword, 1.1F, 0.83F ),
+			new WeaponStats( 1, false, Skyrim.Keyword.WeapTypeWarAxe, 1F, 0.6F ),
+			new WeaponStats( 1, false, Skyrim.Keyword.WeapTypeWarhammer, 0.6F, 0.8F ),
+			new WeaponStats( 1, false, Skyrim.Keyword.WeapTypeBow ),
+			new WeaponStats( 2, true, NewArmoury.Keyword.WeapTypeCestus ),
+			new WeaponStats( 2, true, NewArmoury.Keyword.WeapTypeClaw, Constants.NullFloat, 0.41F ),
+			new WeaponStats( 2, true, NewArmoury.Keyword.WeapTypeHalberd, Constants.NullFloat, 0.58F ),
+			new WeaponStats( 2, true, NewArmoury.Keyword.WeapTypePike, Constants.NullFloat, 0.2F ),
+			new WeaponStats( 2, true, NewArmoury.Keyword.WeapTypeQtrStaff, Constants.NullFloat, 0.25F ),
+			new WeaponStats( 2, true, NewArmoury.Keyword.WeapTypeRapier, Constants.NullFloat, 0.2F ),
+			new WeaponStats( 2, true, NewArmoury.Keyword.WeapTypeSpear ),
+			new WeaponStats( 2, true, NewArmoury.Keyword.WeapTypeWhip, Constants.NullFloat, 0.5F ),
 			// TODO: Find appropriate values for NWTA & WotM unarmed weapons
-			new WeaponStats(2, true, NWTA.Keyword.WeapTypeKatana),
-            new WeaponStats(2, true, NWTA.Keyword.WeapTypeCurvedSword),
-            new WeaponStats(2, true, WayOfTheMonk.Keyword.WeapTypeUnarmed)
-        };
+			new WeaponStats( 2, true, NWTA.Keyword.WeapTypeKatana ),
+			new WeaponStats( 2, true, NWTA.Keyword.WeapTypeCurvedSword ),
+			new WeaponStats( 2, true, WayOfTheMonk.Keyword.WeapTypeUnarmed )
+		};
+
+		public List<WeaponStats> WeaponStats { get => weaponStats; set => weaponStats =  value ; }
 
 		// Modify an attack angle by adding the current AttackStrikeAngleModifier value to it.
-        public float GetModifiedStrikeAngle(float current)
+		public float GetModifiedStrikeAngle(float current)
         {
             return current += AttackStrikeAngleModifier;
         }

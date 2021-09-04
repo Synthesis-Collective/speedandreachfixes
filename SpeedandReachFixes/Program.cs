@@ -2,13 +2,12 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Mutagen.Bethesda;
-using Mutagen.Bethesda.FormKeys.SkyrimSE;
 using Mutagen.Bethesda.Skyrim;
 using Mutagen.Bethesda.Synthesis;
+using Mutagen.Bethesda.FormKeys.SkyrimSE;
 
-namespace SpeedandReachFixes
-{
-    public class Program
+namespace SpeedandReachFixes {
+	public class Program
     {
         private static Lazy<Settings> _settings = null!;
         private static Settings Settings => _settings.Value;
