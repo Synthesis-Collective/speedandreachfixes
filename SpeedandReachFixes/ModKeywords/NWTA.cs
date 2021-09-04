@@ -3,7 +3,12 @@ using Mutagen.Bethesda.Skyrim;
 
 namespace Mutagen.Bethesda.FormKeys.SkyrimSE
 {
-    public static class NWTA // New Weapon Types and Animations
+	/**
+	 * @class NWTA
+	 * @brief Adds support for keywords from the New Weapon Types and Animation Support mod.
+	 * Currently maintained nexus page as of 21-09-03: https://www.nexusmods.com/skyrimspecialedition/mods/33985
+	 */
+	public static class NWTA
     {
         public static class Keyword
         {
