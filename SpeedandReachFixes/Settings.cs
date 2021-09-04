@@ -103,7 +103,7 @@ namespace SpeedandReachFixes {
 		[SettingName( "Base Combat Reach" ), Tooltip( "Melee Reach Formula: ( reach = { fCombatDistance | fCombatBashReach } * NPCRaceScale * WeaponReach + { fObjectHitWeaponReach | fObjectHitTwoHandReach | fObjectHitH2HReach } )" )]
 		public GameSettingsCombatReach CombatReach = new();
 		// Weapon type reach
-		[SettingName("Weapon Type Reach Modifiers"), Tooltip("Melee Reach Formula: ( reach = { fCombatDistance | fCombatBashReach } * NPCRaceScale * WeaponReach + { fObjectHitWeaponReach | fObjectHitTwoHandReach | fObjectHitH2HReach } )")]
+		[SettingName("Weapon Type Reach Modifiers"), Tooltip("Melee Reach Formula: ( reach = ( fCombatDistance | fCombatBashReach ) * NPCRaceScale * WeaponReach + ( fObjectHitWeaponReach | fObjectHitTwoHandReach | fObjectHitH2HReach ) )")]
         public GameSettingsWeaponTypeReach WeaponTypeReach = new();
 		
 		public int AddGameSettingsToPatch(IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
