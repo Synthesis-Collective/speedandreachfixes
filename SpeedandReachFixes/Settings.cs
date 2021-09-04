@@ -167,10 +167,10 @@ namespace SpeedandReachFixes {
 		/// <returns>float</returns>
         private float GetFloat(float current, float local, out bool changed)
         {
-            changed = !local.Equals(current) && !local.Equals(Constants.NullFloat); // if current != local and local is set to a valid number
-			if (changed) // 
-				return IsAdditiveModifier ? current + local : local;
-			return current; // return unmodified
+            changed =  !local.EqualsWithin(current) && !local.EqualsWithin(Constants.NullFloat); // if current != local and local is set to a valid number
+			if ( changed )
+				return  IsAdditiveModifier ? ( current + local ) : local ;
+			return current;
         }
 
 		/// <summary>
