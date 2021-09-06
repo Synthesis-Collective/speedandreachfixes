@@ -1,13 +1,12 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Mutagen.Bethesda;
+using Mutagen.Bethesda.FormKeys.SkyrimSE;
 using Mutagen.Bethesda.Skyrim;
 using Mutagen.Bethesda.Synthesis;
-using Mutagen.Bethesda.FormKeys.SkyrimSE;
 
 namespace SpeedandReachFixes {
-	public class Program
+	public static class Program
     {
         private static Lazy<Settings> _settings = null!;
         private static Settings Settings => _settings.Value;
@@ -32,9 +31,9 @@ namespace SpeedandReachFixes {
 				Console.WriteLine("Successfully modified " + count + " Game Setting(s).");
 
 			// Apply attack angle modifier for all races, if the modifier isn't set to 0
-			if ( !Settings.AttackStrikeAngleModifier.Equals( 0F ) )
-				foreach ( var race in state.LoadOrder.PriorityOrder.Race().WinningOverrides() ) { // iterate through all races that have the ActorTypeNPC keyword.
-					if ( !race.HasKeyword( Skyrim.Keyword.ActorTypeNPC ) )
+			if ( !Settings.AttackStrikeAngleModifier.Equals( 0F ) ) {
+				foreach ( IRaceGetter? race in state.LoadOrder.PriorityOrder.Race().WinningOverrides() ) { // iterate through all races that have the ActorTypeNPC keyword.
+					if ( race?.HasKeyword( Skyrim.Keyword.ActorTypeNPC ) != true )
 						continue; // skip this race if it does not have the ActorTypeNPC keyword
 
 					var last = count;
@@ -46,9 +45,10 @@ namespace SpeedandReachFixes {
 					}
 					Console.WriteLine("Modified " + (count - last) + " attacks for race: " + race.EditorID);
 				}
-            
+			}
+
 			// Apply speed and reach fixes to all weapons.
-            foreach (var weap in state.LoadOrder.PriorityOrder.WinningOverrides<IWeaponGetter>()) 
+			foreach (var weap in state.LoadOrder.PriorityOrder.WinningOverrides<IWeaponGetter>()) 
 			{
 				if ( weap.Data == null )
 					continue;
