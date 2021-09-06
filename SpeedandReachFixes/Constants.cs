@@ -1,3 +1,4 @@
+// Contains constants used for determining null types.
 namespace SpeedandReachFixes {
 	/// <summary>
 	/// Contains default value constants used internally.

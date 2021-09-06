@@ -26,7 +26,7 @@ namespace SpeedandReachFixes {
 
 		// List of WeaponStats objects, each relating to a different weapon keyword.
 		[SettingName( "Weapon Groups" ), Tooltip( "Change the stats of each weapon group." )]
-		private List<WeaponStats> weaponStats = new() {
+		public List<WeaponStats> WeaponStats { get; set; } = new() {
 			new WeaponStats( 1, false, Skyrim.Keyword.WeapTypeBattleaxe, 0.666667F, 0.8275F ),
 			new WeaponStats( 1, false, Skyrim.Keyword.WeapTypeDagger, 1.35F, 0.533F ),
 			new WeaponStats( 1, false, Skyrim.Keyword.WeapTypeGreatsword, 0.85F, 0.88F ),
@@ -48,8 +48,6 @@ namespace SpeedandReachFixes {
 			new WeaponStats( 2, true, NWTA.Keyword.WeapTypeCurvedSword ),
 			new WeaponStats( 2, true, WayOfTheMonk.Keyword.WeapTypeUnarmed )
 		};
-
-		public List<WeaponStats> WeaponStats { get => weaponStats; set => weaponStats =  value ; }
 
 		// Modify an attack angle by adding the current AttackStrikeAngleModifier value to it.
 		public float GetModifiedStrikeAngle(float current)
@@ -81,7 +79,7 @@ namespace SpeedandReachFixes {
 
             var stats = GetHighestPriorityStats(weapon);
 
-            if ( stats == null || stats.ShouldSkip() )
+            if ( stats?.ShouldSkip() != false )
                 return false;
 
             weapon.Data!.Reach = stats.GetReach(weapon.Data.Reach, out var changedReach);

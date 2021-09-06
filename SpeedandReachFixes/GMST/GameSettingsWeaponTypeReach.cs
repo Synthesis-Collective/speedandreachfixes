@@ -1,3 +1,4 @@
+// GameSettings subsection containing reach modifiers.
 using Mutagen.Bethesda.Skyrim;
 using Mutagen.Bethesda.Synthesis;
 using Mutagen.Bethesda.WPF.Reflection.Attributes;

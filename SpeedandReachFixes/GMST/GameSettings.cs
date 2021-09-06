@@ -9,7 +9,7 @@ namespace SpeedandReachFixes.GMST {
 	public class GameSettings {
 		[MaintainOrder]
 		// Combat reach
-		[SettingName( "Base Combat Reach Multipliers" ), Tooltip( "Melee Reach Formula: ( reach = { fCombatDistance | fCombatBashReach } * NPCRaceScale * WeaponReach + { fObjectHitWeaponReach | fObjectHitTwoHandReach | fObjectHitH2HReach } )" )]
+		[SettingName( "Base Combat Reach Multipliers" ), Tooltip( "Melee Reach Formula: ( reach = ( fCombatDistance | fCombatBashReach ) * NPCRaceScale * WeaponReach + ( fObjectHitWeaponReach | fObjectHitTwoHandReach | fObjectHitH2HReach ) )" )]
 		public GameSettingsCombatReach CombatReach = new();
 		// Weapon type reach
 		[SettingName( "Weapon Type Reach Modifiers" ), Tooltip( "Melee Reach Formula: ( reach = ( fCombatDistance | fCombatBashReach ) * NPCRaceScale * WeaponReach + ( fObjectHitWeaponReach | fObjectHitTwoHandReach | fObjectHitH2HReach ) )" )]

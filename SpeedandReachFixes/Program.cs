@@ -19,7 +19,7 @@ namespace SpeedandReachFixes {
 				.SetTypicalOpen(GameRelease.SkyrimSE, "SpeedAndReachFixes.esp")
                 .Run(args);
         }
-        
+
         public static void RunPatch(IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
         {
 			Console.WriteLine("\n\nInitialization successful, beginning patcher process...\n");

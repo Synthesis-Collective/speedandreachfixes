@@ -1,3 +1,4 @@
+// GameSettings subsection containing base combat reach multiplier
 using Mutagen.Bethesda.Skyrim;
 using Mutagen.Bethesda.Synthesis;
 using Mutagen.Bethesda.WPF.Reflection.Attributes;
