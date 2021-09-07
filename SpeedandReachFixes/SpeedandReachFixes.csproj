@@ -3,11 +3,12 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
+	<PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mutagen.Bethesda" Version="0.29.2" />
-    <PackageReference Include="Mutagen.Bethesda.Synthesis" Version="0.18.2" />
-    <PackageReference Include="Mutagen.Bethesda.FormKeys.SkyrimSE" Version="2.0.0" />
+    <PackageReference Include="Mutagen.Bethesda" Version="0.31.0" />
+    <PackageReference Include="Mutagen.Bethesda.FormKeys.SkyrimSE" Version="2.1.0" />
+    <PackageReference Include="Mutagen.Bethesda.Synthesis" Version="0.19.3" />
   </ItemGroup>
 </Project>
