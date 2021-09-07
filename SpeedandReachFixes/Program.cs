@@ -29,7 +29,7 @@ namespace SpeedandReachFixes
             var count = Settings.GameSettings.AddGameSettingsToPatch(state);
 
             if (count > 0) // if game settings were successfully added, write to log
-                Console.WriteLine("Successfully modified " + count + " Game Setting(s).");
+                Console.WriteLine("Modified " + count + " Game Setting(s).");
 
             // Apply attack angle modifier for all races, if the modifier isn't set to 0
             if (!Settings.AttackStrikeAngleModifier.Equals(0F))
@@ -41,7 +41,7 @@ namespace SpeedandReachFixes
 
                     var raceCopy = race.DeepCopy();
 
-                    var last = count;
+                    var subrecordChanges = count;
                     foreach (var attack in raceCopy.Attacks)
                     {
                         if (attack.AttackData == null)
@@ -49,7 +49,12 @@ namespace SpeedandReachFixes
                         attack.AttackData.StrikeAngle = Settings.GetModifiedStrikeAngle(attack.AttackData.StrikeAngle);
                         ++count; // iterate counter by one for each modified attack
                     }
-                    Console.WriteLine("Modified " + (count - last) + " attacks for race: " + race.EditorID);
+                    subrecordChanges = count - subrecordChanges;
+                    if (subrecordChanges > 0)
+                    {
+                        state.PatchMod.Races.Set(raceCopy);
+                        Console.WriteLine("Modified " + subrecordChanges + " attacks for race: " + race.EditorID);
+                    }
                 }
             }
 
