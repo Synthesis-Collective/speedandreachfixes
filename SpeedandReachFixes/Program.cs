@@ -36,11 +36,13 @@ namespace SpeedandReachFixes
             {
                 foreach (IRaceGetter race in state.LoadOrder.PriorityOrder.Race().WinningOverrides())
                 { // iterate through all races that have the ActorTypeNPC keyword.
-                    if (race.HasKeyword(Skyrim.Keyword.ActorTypeNPC))
+                    if (!race.HasKeyword(Skyrim.Keyword.ActorTypeNPC) || race.EditorID == null)
                         continue; // skip this race if it does not have the ActorTypeNPC keyword
 
+                    var raceCopy = race.DeepCopy();
+
                     var last = count;
-                    foreach (var attack in state.PatchMod.Races.GetOrAddAsOverride(race).Attacks)
+                    foreach (var attack in raceCopy.Attacks)
                     {
                         if (attack.AttackData == null)
                             continue;
@@ -54,7 +56,7 @@ namespace SpeedandReachFixes
             // Apply speed and reach fixes to all weapons.
             foreach (var weap in state.LoadOrder.PriorityOrder.WinningOverrides<IWeaponGetter>())
             {
-                if (weap.Data == null)
+                if (weap.Data == null || weap.EditorID == null)
                     continue;
 
                 var weapon = weap.DeepCopy(); // copy weap record to temp

@@ -76,22 +76,22 @@ namespace SpeedandReachFixes
             return highestStats;
         }
 
-        // Applies the current weapon stats configuration to a given weapon ref.
+        // Applies the current weapon stats configuration to a given weapon
         public bool ApplyChangesToWeapon(Weapon weapon)
         {
-            if (weapon == null)
+            if (weapon.Data == null || weapon.EditorID == null)
                 return false;
 
             var stats = GetHighestPriorityStats(weapon);
 
-            if (stats?.ShouldSkip() != false)
+            if (stats.ShouldSkip())
                 return false;
 
-            weapon.Data!.Reach = stats.GetReach(weapon.Data.Reach, out var changedReach);
-            weapon.Data!.Speed = stats.GetSpeed(weapon.Data.Speed, out var changedSpeed);
+            weapon.Data.Reach = stats.GetReach(weapon.Data.Reach, out var changedReach);
+            weapon.Data.Speed = stats.GetSpeed(weapon.Data.Speed, out var changedSpeed);
 
             // Revert any reach changes to giant clubs as they may cause issues with the AI
-            if (weapon.EditorID?.ContainsInsensitive("GiantClub") == true)
+            if (weapon.EditorID.ContainsInsensitive("GiantClub"))
                 weapon.Data.Reach = 1.3F;
             return changedReach || changedSpeed;
         }

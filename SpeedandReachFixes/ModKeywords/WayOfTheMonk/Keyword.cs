@@ -9,7 +9,7 @@ namespace Mutagen.Bethesda.FormKeys.SkyrimSE
     {
         public static class Keyword
         {
-            private static FormLink<IKeywordGetter> Construct(uint id) => new FormLink<IKeywordGetter>(ModKey.MakeFormKey(id));
+            private static FormLink<IKeywordGetter> Construct(uint id) => new (ModKey.MakeFormKey(id));
             public static FormLink<IKeywordGetter> WeapTypeUnarmed => Construct(0xd6d);
             public static FormLink<IKeywordGetter> WoMHandArmorWeapon => Construct(0x2dfa);
             public static FormLink<IKeywordGetter> WoMHandWeapon => Construct(0x2dfc);

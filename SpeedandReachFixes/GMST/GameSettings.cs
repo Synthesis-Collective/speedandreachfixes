@@ -22,8 +22,11 @@ namespace SpeedandReachFixes.GMST
         public int AddGameSettingsToPatch(IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
         {
             var count = 0;
-            count += WeaponTypeReach.AddGameSettings(state); // add game settings from weapon type reach category
-            count += CombatReach.AddGameSettings(state); // add game settings from combat reach category
+            // add game settings from weapon type reach category
+            count += WeaponTypeReach.AddGameSettings(state);
+
+            // add game settings from combat reach category
+            count += CombatReach.AddGameSettings(state);
             return count;
         }
     }

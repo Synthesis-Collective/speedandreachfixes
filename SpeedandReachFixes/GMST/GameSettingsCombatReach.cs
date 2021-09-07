@@ -1,4 +1,3 @@
-// GameSettings subsection containing base combat reach multiplier
 using Mutagen.Bethesda.Skyrim;
 using Mutagen.Bethesda.Synthesis;
 using Mutagen.Bethesda.WPF.Reflection.Attributes;
@@ -23,7 +22,6 @@ namespace SpeedandReachFixes.GMST
         [Tooltip("The base reach multiplier used for shield bash attacks.")]
         public float fCombatBashReach = 61F;
 
-        // Adds the game settings from this class to the current patcher state
         public int AddGameSettings(IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
         {
             if (!Enabled) return 0;

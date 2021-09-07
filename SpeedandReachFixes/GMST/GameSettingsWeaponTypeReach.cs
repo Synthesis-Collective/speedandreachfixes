@@ -7,8 +7,8 @@ namespace SpeedandReachFixes.GMST
 {
     /// <summary>
     /// Contains game settings related to weapon type reach modifiers, specifically:
-    ///		fObjectHitWeaponReach, 
-    ///		fObjectHitTwoHandReach, 
+    ///		fObjectHitWeaponReach,
+    ///		fObjectHitTwoHandReach,
     ///	  & fObjectHitH2HReach.
     /// </summary>
     public class GameSettingsWeaponTypeReach
