@@ -27,8 +27,8 @@ namespace SpeedandReachFixes
         public float AttackStrikeAngleModifier = 7F;
 
         // List of WeaponStats objects, each relating to a different weapon keyword.
-        [SettingName("Weapon Groups")]
-        [Tooltip("Change the stats of each weapon group.")]
+        [SettingName("Stat Categories")]
+        [Tooltip("Change the stats of each weapon type.")]
         public List<WeaponStats> WeaponStats { get; set; } = new()
         {
             new WeaponStats(1, false, Skyrim.Keyword.WeapTypeBattleaxe, 0.666667F, 0.8275F),
@@ -63,7 +63,7 @@ namespace SpeedandReachFixes
         private WeaponStats GetHighestPriorityStats(Weapon weapon)
         {
             WeaponStats highestStats = new();
-            var highest = 0;
+            var highest = 0; // the priority level associated with the current highestStats
             foreach (var stats in WeaponStats)
             {
                 var priority = stats.GetPriority(weapon.Keywords);
@@ -80,7 +80,7 @@ namespace SpeedandReachFixes
         public bool ApplyChangesToWeapon(Weapon weapon)
         {
             if (weapon.Data == null || weapon.EditorID == null)
-                return false;
+                return false; // return early if the given weapon is invalid
 
             var stats = GetHighestPriorityStats(weapon);
 
@@ -93,7 +93,7 @@ namespace SpeedandReachFixes
             // Revert any reach changes to giant clubs as they may cause issues with the AI
             if (weapon.EditorID.ContainsInsensitive("GiantClub"))
                 weapon.Data.Reach = 1.3F;
-            return changedReach || changedSpeed;
+            return changedReach || changedSpeed; // returns true if either the speed or the reach values were changed.
         }
     }
 }

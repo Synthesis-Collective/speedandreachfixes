@@ -14,20 +14,20 @@ namespace SpeedandReachFixes.SettingObjects
     {
         [MaintainOrder]
 
-        [Tooltip("The keyword attached to this weapon type.")]
+        [Tooltip("The keyword/type of weapon that this category applies to.")]
         public FormLink<IKeywordGetter> Keyword;
 
-        [Tooltip("When multiple weapon types apply to the same category, the highest priority wins.")]
+        [Tooltip("If multiple categories could apply to the same weapon, the highest priority one wins.")]
         public int Priority;
 
-        [SettingName("Is Additive Modifier")]
-        [Tooltip("When checked, adds the specified values rather than overwriting them. Negative values will subtract.")]
+        [SettingName("Add to Current Stats")]
+        [Tooltip("When checked, the reach & speed stats in this category are added to the current stats, rather than overwriting them. Negative values are allowed.")]
         public bool IsAdditiveModifier;
 
-        [Tooltip("The range of this weapon. A modifier value of 0 means unchanged.")]
+        [Tooltip("The range of this weapon. Unchanged if this is 0 and \"Add to Current Stats\" is checked.")]
         public float Reach;
 
-        [Tooltip("The speed of this weapon. A modifier value of 0 means unchanged.")]
+        [Tooltip("The speed of this weapon. Unchanged if this is 0 and \"Add to Current Stats\" is checked.")]
         public float Speed;
 
         // Default Constructor
