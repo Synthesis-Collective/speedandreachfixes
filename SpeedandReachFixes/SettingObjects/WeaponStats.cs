@@ -96,7 +96,7 @@ namespace SpeedandReachFixes.SettingObjects
         /// <returns>bool</returns>
         public bool ShouldSkip()
         {
-            return (Keyword.IsNull) || (Reach.Equals(Constants.DefaultPriority) && Speed.Equals(Constants.DefaultPriority));
+            return Keyword.IsNull || (IsAdditiveModifier && Reach.EqualsWithin(Constants.NullFloat) && Speed.EqualsWithin(Constants.NullFloat));
         }
 
         /// <summary>
