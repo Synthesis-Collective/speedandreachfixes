@@ -34,7 +34,7 @@ namespace SpeedandReachFixes.SettingObjects
         public WeaponStats()
         {
             Priority = 0;
-            IsAdditiveModifier = false;
+            IsAdditiveModifier = true;
             Keyword = new();
             Keyword.SetToNull(); // set keyword to null (all 0s)
             Reach = Constants.NullFloat;
