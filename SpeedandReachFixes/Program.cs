@@ -29,7 +29,7 @@ namespace SpeedandReachFixes
             var count = Settings.GameSettings.AddGameSettingsToPatch(state);
 
             if (count > 0) // if game settings were successfully added, write to log
-                Console.WriteLine("Modified " + count + " Game Setting(s).");
+                Console.WriteLine($"Modified {count} Game Setting {(count > 1 ? "s" : "")}.");
 
             // Apply attack angle modifier for all races, if the modifier isn't set to 0
             if (!Settings.AttackStrikeAngleModifier.Equals(0F))
@@ -53,7 +53,7 @@ namespace SpeedandReachFixes
                     if (subrecordChanges > 0)
                     {
                         state.PatchMod.Races.Set(raceCopy);
-                        Console.WriteLine("Modified " + subrecordChanges + " attacks for race: " + race.EditorID);
+                        Console.WriteLine($"Modified {subrecordChanges} attacks for race: {race.EditorID}");
                     }
                 }
             }
@@ -66,16 +66,22 @@ namespace SpeedandReachFixes
 
                 var weapon = weap.DeepCopy(); // copy weap record to temp
 
-                if (Settings.ApplyChangesToWeapon(weapon))
+                var (changedReach, changedSpeed) = Settings.ApplyChangesToWeapon(weapon);
+
+                if (changedReach || changedSpeed)
                 { // if temp record was modified
                     state.PatchMod.Weapons.Set(weapon); // set weap record to temp
-                    Console.WriteLine("Successfully modified weapon: " + weap.EditorID);
+                    Console.WriteLine($"Successfully modified weapon: {weap.EditorID}");
                     ++count;
+                    if (Settings.PrintWeaponStatsToLog)
+                    {
+                        Console.Write($"{(changedReach ? $"\tReach: {weap.Data.Reach}\n" : "")}{(changedSpeed ? $"\tSpeed: {weap.Data.Speed}\n" : "")}");
+                    }
                 }
             }
 
             // Log the total number of records modified by the patcher.
-            Console.WriteLine("\nFinished patching " + count + " records.\n");
+            Console.WriteLine($"\nFinished patching {count} records.\n");
         }
     }
 }
