@@ -62,6 +62,10 @@ namespace SpeedandReachFixes
             new WeaponStats(2, true, WayOfTheMonk.Keyword.WeapTypeUnarmed)
         };
 
+        [SettingName("Verbose Log")]
+        [Tooltip("Print any modified weapon stats to the log.")]
+        public bool PrintWeaponStatsToLog = false;
+
         // Modify an attack angle by adding the current AttackStrikeAngleModifier value to it.
         public float GetModifiedStrikeAngle(float current)
         {
@@ -86,15 +90,15 @@ namespace SpeedandReachFixes
         }
 
         // Applies the current weapon stats configuration to a given weapon
-        public bool ApplyChangesToWeapon(Weapon weapon)
+        public (bool, bool) ApplyChangesToWeapon(Weapon weapon)
         {
             if (weapon.Data == null || weapon.EditorID == null)
-                return false; // return early if the given weapon is invalid
+                return (false, false); // return early if the given weapon is invalid
 
             var stats = GetHighestPriorityStats(weapon);
 
             if (stats.ShouldSkip())
-                return false;
+                return (false, false);
 
             // Apply reach changes if they are enabled globally
             bool changedReach = false;
@@ -109,7 +113,7 @@ namespace SpeedandReachFixes
             // Revert any reach changes to giant clubs as they may cause issues with the AI
             if (weapon.EditorID.ContainsInsensitive("GiantClub"))
                 weapon.Data.Reach = 1.3F;
-            return changedReach || changedSpeed; // returns true if either the speed or the reach values were changed.
+            return (changedReach, changedSpeed); // returns true if either the speed or the reach values were changed.
         }
     }
 }
