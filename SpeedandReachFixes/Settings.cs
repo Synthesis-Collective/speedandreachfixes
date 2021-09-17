@@ -26,6 +26,15 @@ namespace SpeedandReachFixes
         [Tooltip("Changes the angle at which an NPC can be hit by an attack. This value is added to the current value for all attacks and races. Set to 0 to disable, or negative to subtract.")]
         public float AttackStrikeAngleModifier = 7F;
 
+        // Global toggles
+        [SettingName("Enable Reach Changes")]
+        [Tooltip("Global toggle for reach changes, if unchecked, all reach changes will be disabled.")]
+        public bool EnableReachChangesGlobal = true;
+
+        [SettingName("Enable Speed Changes")]
+        [Tooltip("Global toggle for speed changes, if unchecked, all speed changes will be disabled.")]
+        public bool EnableSpeedChangesGlobal = true;
+
         // List of WeaponStats objects, each relating to a different weapon keyword.
         [SettingName("Stat Categories")]
         [Tooltip("Change the stats of each weapon type.")]
@@ -87,8 +96,15 @@ namespace SpeedandReachFixes
             if (stats.ShouldSkip())
                 return false;
 
-            weapon.Data.Reach = stats.GetReach(weapon.Data.Reach, out var changedReach);
-            weapon.Data.Speed = stats.GetSpeed(weapon.Data.Speed, out var changedSpeed);
+            // Apply reach changes if they are enabled globally
+            bool changedReach = false;
+            if (EnableReachChangesGlobal)
+                weapon.Data.Reach = stats.GetReach(weapon.Data.Reach, out changedReach);
+
+            // Apply speed changes if they are enabled globally
+            bool changedSpeed = false;
+            if (EnableSpeedChangesGlobal)
+                weapon.Data.Speed = stats.GetSpeed(weapon.Data.Speed, out changedSpeed);
 
             // Revert any reach changes to giant clubs as they may cause issues with the AI
             if (weapon.EditorID.ContainsInsensitive("GiantClub"))
