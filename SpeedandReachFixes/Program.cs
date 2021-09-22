@@ -35,10 +35,11 @@ namespace SpeedandReachFixes
             // Apply attack angle modifier for all races, if the modifier isn't set to 0
             if (!Settings.AttackStrikeAngleModifier.Equals(0F))
             {
-                try
+                foreach (IRaceGetter race in state.LoadOrder.PriorityOrder.Race().WinningOverrides())
                 {
-                    foreach (IRaceGetter race in state.LoadOrder.PriorityOrder.Race().WinningOverrides())
-                    { // iterate through all races that have the ActorTypeNPC keyword.
+                    // iterate through all races that have the ActorTypeNPC keyword.
+                    try
+                    {
                         if (!race.HasKeyword(Skyrim.Keyword.ActorTypeNPC) || race.EditorID == null)
                             continue; // skip this race if it does not have the ActorTypeNPC keyword
 
@@ -49,9 +50,11 @@ namespace SpeedandReachFixes
                         {
                             if (attack.AttackData == null)
                                 continue;
-                            attack.AttackData.StrikeAngle = Settings.GetModifiedStrikeAngle(attack.AttackData.StrikeAngle);
+                            attack.AttackData.StrikeAngle =
+                                Settings.GetModifiedStrikeAngle(attack.AttackData.StrikeAngle);
                             ++count; // iterate counter by one for each modified attack
                         }
+
                         subrecordChanges = count - subrecordChanges;
                         if (subrecordChanges > 0)
                         {
@@ -59,10 +62,10 @@ namespace SpeedandReachFixes
                             Console.WriteLine($"Modified {subrecordChanges} attacks for race: {race.EditorID}");
                         }
                     }
-                }
-                catch (Exception ex)
-                {
-                    throw RecordException.Enrich(ex, weap);
+                    catch (Exception ex)
+                    {
+                        throw RecordException.Enrich(ex, race);
+                    }
                 }
             }
 
