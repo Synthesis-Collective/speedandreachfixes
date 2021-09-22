@@ -4,6 +4,7 @@ using Mutagen.Bethesda.Skyrim;
 using Mutagen.Bethesda.Synthesis;
 using System;
 using System.Threading.Tasks;
+using Mutagen.Bethesda.Plugins.Exceptions;
 
 namespace SpeedandReachFixes
 {
@@ -34,49 +35,65 @@ namespace SpeedandReachFixes
             // Apply attack angle modifier for all races, if the modifier isn't set to 0
             if (!Settings.AttackStrikeAngleModifier.Equals(0F))
             {
-                foreach (IRaceGetter race in state.LoadOrder.PriorityOrder.Race().WinningOverrides())
-                { // iterate through all races that have the ActorTypeNPC keyword.
-                    if (!race.HasKeyword(Skyrim.Keyword.ActorTypeNPC) || race.EditorID == null)
-                        continue; // skip this race if it does not have the ActorTypeNPC keyword
+                try
+                {
+                    foreach (IRaceGetter race in state.LoadOrder.PriorityOrder.Race().WinningOverrides())
+                    { // iterate through all races that have the ActorTypeNPC keyword.
+                        if (!race.HasKeyword(Skyrim.Keyword.ActorTypeNPC) || race.EditorID == null)
+                            continue; // skip this race if it does not have the ActorTypeNPC keyword
 
-                    var raceCopy = race.DeepCopy();
+                        var raceCopy = race.DeepCopy();
 
-                    var subrecordChanges = count;
-                    foreach (var attack in raceCopy.Attacks)
-                    {
-                        if (attack.AttackData == null)
-                            continue;
-                        attack.AttackData.StrikeAngle = Settings.GetModifiedStrikeAngle(attack.AttackData.StrikeAngle);
-                        ++count; // iterate counter by one for each modified attack
+                        var subrecordChanges = count;
+                        foreach (var attack in raceCopy.Attacks)
+                        {
+                            if (attack.AttackData == null)
+                                continue;
+                            attack.AttackData.StrikeAngle = Settings.GetModifiedStrikeAngle(attack.AttackData.StrikeAngle);
+                            ++count; // iterate counter by one for each modified attack
+                        }
+                        subrecordChanges = count - subrecordChanges;
+                        if (subrecordChanges > 0)
+                        {
+                            state.PatchMod.Races.Set(raceCopy);
+                            Console.WriteLine($"Modified {subrecordChanges} attacks for race: {race.EditorID}");
+                        }
                     }
-                    subrecordChanges = count - subrecordChanges;
-                    if (subrecordChanges > 0)
-                    {
-                        state.PatchMod.Races.Set(raceCopy);
-                        Console.WriteLine($"Modified {subrecordChanges} attacks for race: {race.EditorID}");
-                    }
+                }
+                catch (Exception ex)
+                {
+                    throw RecordException.Enrich(ex, weap);
                 }
             }
 
             // Apply speed and reach fixes to all weapons.
             foreach (var weap in state.LoadOrder.PriorityOrder.WinningOverrides<IWeaponGetter>())
             {
-                if (weap.Data == null || weap.EditorID == null)
-                    continue;
+                try
+                {
+                    if (weap.Data == null || weap.EditorID == null)
+                        continue;
 
-                var weapon = weap.DeepCopy(); // copy weap record to temp
+                    var weapon = weap.DeepCopy(); // copy weap record to temp
 
-                var (changedReach, changedSpeed) = Settings.ApplyChangesToWeapon(weapon);
+                    var (changedReach, changedSpeed) = Settings.ApplyChangesToWeapon(weapon);
 
-                if (changedReach || changedSpeed)
-                { // if temp record was modified
-                    state.PatchMod.Weapons.Set(weapon); // set weap record to temp
-                    Console.WriteLine($"Successfully modified weapon: {weap.EditorID}");
-                    ++count;
-                    if (Settings.PrintWeaponStatsToLog)
+                    if (changedReach || changedSpeed)
                     {
-                        Console.Write($"{(changedReach ? $"\tReach: {weap.Data.Reach}\n" : "")}{(changedSpeed ? $"\tSpeed: {weap.Data.Speed}\n" : "")}");
+                        // if temp record was modified
+                        state.PatchMod.Weapons.Set(weapon); // set weap record to temp
+                        Console.WriteLine($"Successfully modified weapon: {weap.EditorID}");
+                        ++count;
+                        if (Settings.PrintWeaponStatsToLog)
+                        {
+                            Console.Write(
+                                $"{(changedReach ? $"\tReach: {weap.Data.Reach}\n" : "")}{(changedSpeed ? $"\tSpeed: {weap.Data.Speed}\n" : "")}");
+                        }
                     }
+                }
+                catch (Exception ex)
+                {
+                    throw RecordException.Enrich(ex, weap);
                 }
             }
 
