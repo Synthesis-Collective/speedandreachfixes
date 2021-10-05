@@ -47,19 +47,12 @@ namespace SpeedandReachFixes
             new WeaponStats(1, false, Skyrim.Keyword.WeapTypeSword, 1.1F, 0.83F),
             new WeaponStats(1, false, Skyrim.Keyword.WeapTypeWarAxe, 1F, 0.6F),
             new WeaponStats(1, false, Skyrim.Keyword.WeapTypeWarhammer, 0.6F, 0.8F),
-            new WeaponStats(1, false, Skyrim.Keyword.WeapTypeBow),
-            new WeaponStats(2, true, NewArmoury.Keyword.WeapTypeCestus),
             new WeaponStats(2, true, NewArmoury.Keyword.WeapTypeClaw, Constants.NullFloat, 0.41F),
             new WeaponStats(2, true, NewArmoury.Keyword.WeapTypeHalberd, Constants.NullFloat, 0.58F),
             new WeaponStats(2, true, NewArmoury.Keyword.WeapTypePike, Constants.NullFloat, 0.2F),
             new WeaponStats(2, true, NewArmoury.Keyword.WeapTypeQtrStaff, Constants.NullFloat, 0.25F),
             new WeaponStats(2, true, NewArmoury.Keyword.WeapTypeRapier, Constants.NullFloat, 0.2F),
-            new WeaponStats(2, true, NewArmoury.Keyword.WeapTypeSpear),
             new WeaponStats(2, true, NewArmoury.Keyword.WeapTypeWhip, Constants.NullFloat, 0.5F),
-            // TODO: Find appropriate values for NWTA & WotM unarmed weapons
-            new WeaponStats(2, true, NWTA.Keyword.WeapTypeKatana),
-            new WeaponStats(2, true, NWTA.Keyword.WeapTypeCurvedSword),
-            new WeaponStats(2, true, WayOfTheMonk.Keyword.WeapTypeUnarmed)
         };
 
         [SettingName("Verbose Log")]
