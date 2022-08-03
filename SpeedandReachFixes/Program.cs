@@ -74,7 +74,7 @@ namespace SpeedandReachFixes
             {
                 try
                 {
-                    if (weap.Data == null || weap.EditorID == null)
+                    if (weap.Data == null || weap.EditorID == null || (Settings.SkipTemplatedWeapons && !weap.Template.IsNull))
                         continue;
 
                     var weapon = weap.DeepCopy(); // copy weap record to temp

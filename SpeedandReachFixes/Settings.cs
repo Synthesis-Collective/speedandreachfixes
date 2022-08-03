@@ -59,6 +59,9 @@ namespace SpeedandReachFixes
         [Tooltip("Print any modified weapon stats to the log.")]
         public bool PrintWeaponStatsToLog = false;
 
+        [Tooltip("When checked, weapon records with the 'CNAM - Template' field are skipped before modifying them")]
+        public bool SkipTemplatedWeapons = true;
+
         // Modify an attack angle by adding the current AttackStrikeAngleModifier value to it.
         public float GetModifiedStrikeAngle(float current)
         {
